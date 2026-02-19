@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Program Ramadhan Berkah</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background:#f7faf9;
+    color:#333;
+}
+
+/* ================= HEADER ================= */
+.section-hero{
+    background:linear-gradient(135deg,#0f766e,#14b8a6);
+    color:white;
+    text-align:center;
+    padding:80px 20px;
+}
+
+.section-hero h1{
+    font-size:40px;
+    margin-bottom:15px;
+}
+
+.section-hero p{
+    max-width:700px;
+    margin:auto;
+    line-height:1.7;
+    font-size:18px;
+}
+
+/* ================= PROGRAM ================= */
+.section-program{
+    padding:60px 20px;
+}
+
+.program-container{
+    max-width:1100px;
+    margin:auto;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:30px;
+}
+
+.program-card{
+    background:white;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+    text-align:center;
+    transition:0.3s;
+}
+
+.program-card:hover{
+    transform:translateY(-5px);
+}
+
+.program-card img{
+    width:100%;
+    height:250px;
+    object-fit:cover;
+}
+
+.program-card h3{
+    margin:15px 0 10px;
+}
+
+.program-card p{
+    padding:0 15px;
+    font-size:15px;
+    line-height:1.6;
+}
+
+.btn{
+    display:inline-block;
+    margin:15px 0 25px;
+    padding:10px 25px;
+    background:#0f766e;
+    color:white;
+    border-radius:25px;
+    text-decoration:none;
+    font-size:14px;
+    transition:0.3s;
+}
+
+.btn:hover{
+    background:#14b8a6;
+}
+
+/* ================= TABEL ================= */
+.section-hadiah{
+    padding:60px 20px;
+    background:#ecfdf5;
+}
+
+.section-hadiah h2{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.table-container{
+    max-width:900px;
+    margin:auto;
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+th,td{
+    padding:12px 15px;
+    border:1px solid #ddd;
+    text-align:center;
+}
+
+th{
+    background:#0f766e;
+    color:white;
+}
+
+tr:nth-child(even){
+    background:#f9f9f9;
+}
+
+/* ================= FOOTER ================= */
+footer{
+    text-align:center;
+    padding:20px;
+    background:#0f766e;
+    color:white;
+    font-size:14px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= SECTION 1 ================= -->
+<section class="section-hero">
+    <h1>🌙 Ramadhan Berkah 🌙</h1>
+    <h3 style="color: gold;">Spirit of Ramadhan: Faith, Focus, Future</h3>
+    <p>
+        Bulan Ramadhan adalah waktu terbaik untuk memperbanyak amal ibadah,
+        meningkatkan keimanan, serta mengisi hari-hari dengan kegiatan positif,
+        bermanfaat, dan penuh keberkahan.
+    </p>
+</section>
+
+
+<!-- ================= SECTION 2 ================= -->
+<section class="section-program">
+
+<div class="program-container">
+
+    <!-- LOMBA -->
+    <div class="program-card">
+        <img src="lomba.png" alt="Lomba Ramadhan">
+        <h3>Lomba Ramadhan</h3>
+        <p>
+            Berbagai perlombaan Ramadhan untuk meningkatkan kreativitas,
+            semangat beribadah, dan mempererat kebersamaan di bulan suci. 
+
+        </p>
+        <a href="#" class="btn">Daftar Lomba</a>
+    </div>
+
+    <!-- KHATAMAN -->
+    <div class="program-card">
+        <img src="ngaji.png" alt="Khataman Quran">
+        <h3>Program Khataman Selindo</h3>
+        <p>
+            Program membaca Al-Qur’an bersama " One Juz One COU " untuk mencapai khatam
+            selama bulan Ramadhan dengan penuh kekhusyukan.
+        </p>
+        <a href="#" class="btn">Ikuti Program</a>
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- ================= SECTION 3 ================= -->
+<section class="section-hadiah">
+
+<h2>🏆 Tabel Hadiah Pemenang 🏆</h2>
+
+<div class="table-container">
+<table>
+    <tr>
+        <th>No</th>
+        <th>Jenis Lomba</th>
+        <th>Juara</th>
+        <th>Hadiah</th>
+    </tr>
+
+    <tr>
+        <td>1</td>
+        <td>Video Kreatif pegawai/Anak pegawai</td>
+        <td>1, 2, 3</td>
+        <td>Rp 300K, Rp 250K, Rp 150K </td>
+    </tr>
+
+    <tr>
+        <td>2</td>
+        <td>Lomba Mengaji Untuk Anak pegawai</td>
+        <td>1, 2, 3</td>
+        <td>SRp 300K, Rp 250K, Rp 150K</td>
+    </tr>
+
+    <tr>
+        <td>3</td>
+        <td>Lomba mengaji Untuk Pegawai</td>
+        <td>1, 2, 3</td>
+        <td>Rp 300K, Rp 250K, Rp 150K</td>
+    </tr>
+
+    <tr>
+        <td>4</td>
+        <td>Lomba Azan Pegawai</td>
+        <td>1, 2, 3</td>
+        <td>Rp 300K, Rp 250K, Rp 150K</td>
+    </tr>
+
+    <tr>
+        <td>5</td>
+        <td>Lomba Azan Untuk Anak Pegawai</td>
+        <td>1, 2, 3</td>
+        <td>Rp 300K, Rp 250K, Rp 150K</td>
+    </tr>
+
+    <tr>
+        <td>6</td>
+        <td>Lomba Kaligrafi Anak</td>
+        <td>1, 2, 3</td>
+        <td>Rp 300K, Rp 250K, Rp 150K</td>
+    </tr>
+
+    <tr>
+        <td>7</td>
+        <td>Undian 4 orang untuk Qataman Selindo </td>
+        <td>1, 2, 3 , 4</td>
+        <td>Masing-masing Rp.200K</td>
+    </tr>
+
+</table>
+</div>
+
+</section>
+
+
+<!-- ================= FOOTER ================= -->
+<footer>
+    © 2026 Program Ramadhan Berkah | HCC & DKM
+</footer>
+
+</body>
+</html>
