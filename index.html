@@ -51,8 +51,8 @@
         }
 
         /* HERO */
-        .hero{margin-top: 100px;
-            min-height:20vh;
+        .hero{
+            min-height:100vh;
             display:flex;
             align-items:center;
         }
@@ -197,24 +197,110 @@
 <section class="hero container">
     <div class="row align-items-center w-100">
 
-        <div class="col-md-12 lg-12" data-aos="fade-right">
-            <h2>
+        <div class="col-lg-6" data-aos="fade-right">
+            <h1>
                 Membangun <span>Talenta Unggul</span><br>
                 Untuk Masa Depan
-            </h2>
+            </h1>
             <p class="mt-3">
                 Human Capital Center berfokus pada pengembangan SDM profesional,
                 adaptif, dan berintegritas tinggi.
             </p>
-            
+            <a href="#program" class="btn btn-hcc mt-4">
+                Jelajahi Program <i class="fa-solid fa-arrow-right ms-2"></i>
+            </a>
         </div>
 
-        
+        <div class="col-lg-6 text-center" data-aos="fade-left">
+            <img src="imageku.png" class="img-fluid" alt="HCC">
+        </div>
 
     </div>
 </section>
 
+<!-- REKRUTMENT -->
+<section id="rekrut" class="section container">
+    <div class="text-center mb-5" data-aos="fade-up">
+        <h1 class="fw-bold">
+            <i class="fa-solid fa-user-plus"></i> Rekrutment
+        </h1>
+        <p class="lead">Menemukan talenta terbaik untuk organisasi</p>
+    </div>
 
+    <div class="row g-4">
+        <div class="col-md-4" data-aos="zoom-in">
+            <div class="hcc-card text-center">
+                <i class="fa-solid fa-user-check"></i>
+                <h5>Seleksi Kompetensi</h5>
+                <p>Seleksi berbasis kompetensi dan integritas.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="150">
+            <div class="hcc-card text-center">
+                <i class="fa-solid fa-briefcase"></i>
+                <h5>Talent Pool</h5>
+                <p>Database talenta unggulan berkelanjutan.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="300">
+            <div class="hcc-card text-center">
+                <i class="fa-solid fa-chart-line"></i>
+                <h5>Assessment</h5>
+                <p>Evaluasi potensi dan kinerja menyeluruh.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-5">
+        <a href="https://portal-rekrutmen.vercel.app/"  class="btn btn-hcc btn-lg">
+            <i class="fa-solid fa-rocket"></i> Klik Portal Recruitment
+        </button></a>
+    </div>
+</section>
+
+<!-- DEVELOPMENT -->
+<section id="dev" class="section container">
+    <div class="text-center mb-5" data-aos="fade-up">
+        <h1 class="fw-bold">
+            <i class="fa-solid fa-graduation-cap"></i> Training & Development
+        </h1>
+        <p class="lead">Program pengembangan kompetensi berkelanjutan</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4" data-aos="fade-up">
+            <div class="hcc-card text-center">
+                <i class="fa-solid fa-user-plus"></i>
+                <h5>Training Onboarding</h5>
+                <p>Adaptasi cepat karyawan baru.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="150">
+            <div class="hcc-card text-center">
+                <i class="fa-solid fa-shield-halved"></i>
+                <h5>Training Mandatory</h5>
+                <p>Keselamatan, prosedur, dan kepatuhan.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="hcc-card text-center">
+                <i class="fa-solid fa-people-group"></i>
+                <h5>Leadership Training</h5>
+                <p>Pengembangan kepemimpinan strategis.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-5">
+        <a href="https://portal-training.vercel.app" class="btn btn-hcc btn-lg">
+          Klik Portal Training Development <i class="fa-solid fa-arrow-right ms-2"></i>
+        </a>
+    </div>
+</section>
 
 <!-- PROGRAM -->
 <section id="program" class="section container">
@@ -224,33 +310,18 @@
     </div>
 
     
-      <div class="row g-4 mb-5">
-
+    <div class="row g-4 mb-5">
         <div class="col-md-4" data-aos="flip-left">
             <div class="hcc-card text-center">
                 <i class="fa-solid fa-chart-line"></i>
        
-                <h5>Portal Training </h5>
-                <p>Adalah Website/platform online khusus untuk pelatihan atau pembelajaran.</p>
-                <a href="https://portal-training.vercel.app" class="btn btn-primary mt-3">
+                <h5>WOLA</h5>
+                <p>WorkLoad Analysis. Analisis beban kerja guna memastikan tugas terlaksana secara efektif dan efisien</p>
+                <a href="https://timecard-ssi.vercel.app" class="btn btn-primary mt-3">
                     Lihat Detail
                 </a>
             </div>
         </div>
-
-
-        <div class="col-md-4" data-aos="flip-left">
-            <div class="hcc-card text-center">
-                <i class="fa-solid fa-chart-line"></i>
-       
-                <h5>Portal Rekruitment </h5>
-                <p>Adalah Website/platform online khusus untuk mengelola seluruh proses hiring Pegawai baru</p>
-                <a href="https://portal-rekrutmen.vercel.app" class="btn btn-primary mt-3">
-                    Lihat Detail
-                </a>
-            </div>
-        </div>
-
 
         <div class="col-md-4" data-aos="flip-left" data-aos-delay="150">
             <div class="hcc-card text-center">
@@ -262,51 +333,32 @@
                 </a>
             </div>
         </div>
-      </div>
-
-
-     <div class="row g-4 mb-5">
-
-        <div class="col-md-4" data-aos="flip-left">
-            <div class="hcc-card text-center">
-                <i class="fa-solid fa-chart-line"></i>
-       
-                <h5>WOLA</h5>
-                <p>WorkLoad Analysis. Analisis beban kerja guna memastikan tugas terlaksana secara efektif dan efisien . Dipakai untuk pegawai kantor Pusat </p>
-                <a href="https://timecard-ssi.vercel.app" class="btn btn-primary mt-3">
-                    Lihat Detail
-                </a>
-            </div>
-        </div>
- 
 
         <div class="col-md-4" data-aos="flip-left" data-aos-delay="300">
             <div class="hcc-card text-center">
                 <i class="fa-solid fa-trophy"></i>
-                <h5>Polling Best Employee</h5>
-                <p>Polling untuk mencari  pegawai berprestasi atas dedikasi dan kinerja terbaik</p>
+                <h5>Best Employee</h5>
+                <p>Apresiasi bagi pegawai berprestasi atas dedikasi dan kinerja terbaik</p>
                 <a href="https://best-employee.vercel.app/" class="btn btn-primary mt-3">
                     Lihat Detail
                 </a>
             </div>
         </div>
-   
+    </div>
+
+
+    <div class="row g-4 mb-5">
         <div class="col-md-4" data-aos="flip-left">
             <div class="hcc-card text-center">
                 <i class="fa-solid fa-mosque"></i>
-                <h5>Pajero </h5>
-                <p>Informasi mengenai Pajero ( Perjalanan Rohani ) </p>
-                <a href="https://pajero-ssi.vercel.app/" class="btn btn-primary mt-3">
+                <h5>DKM Masjid Albarkah </h5>
+                <p>Laporan keuangan masjid yang akuntabel dan informatif</p>
+                <a href="https://dkm-ssi.vercel.app/" class="btn btn-primary mt-3">
                     Lihat Detail
                 </a>
             </div>
         </div>
 
-      </div>
-
-
-      <div class="row g-4 mb-5">
-        
         <div class="col-md-4" data-aos="flip-left" data-aos-delay="150">
             <div class="hcc-card text-center">
                 <i class="fa-solid fa-microphone"></i>
@@ -318,6 +370,19 @@
             </div>
         </div>
 
+        <div class="col-md-4" data-aos="flip-left" data-aos-delay="300">
+            <div class="hcc-card text-center">
+                <i class="fa-solid fa-user-check"></i>
+                <h5>Absensi keterlambatan Pegawai Headquarters </h5>
+                <p>Pemantauan kehadiran dan ketepatan waktu secara akurat dan real-time.</p>
+                <a href="https://absensi-telat.vercel.app/" class="btn btn-primary mt-3">
+                    Lihat Detail
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
         <div class="col-md-4" data-aos="flip-left">
             <div class="hcc-card text-center">
                 <i class="fa-solid fa-pause"></i>
@@ -327,7 +392,7 @@
                     Lihat Detail
                 </a>
             </div>
-        </div>  
+        </div>
 
         <div class="col-md-4" data-aos="flip-left" data-aos-delay="150">
             <div class="hcc-card text-center">
@@ -340,11 +405,7 @@
             </div>
         </div>
 
-      </div>
-
-      <div class="row g-4 mb-5">
-
-        <div class="col-md-6" data-aos="flip-left" data-aos-delay="300">
+        <div class="col-md-4" data-aos="flip-left" data-aos-delay="300">
             <div class="hcc-card text-center">
                 <i class="fa-solid fa-lightbulb"></i>
                 <h5> Kamus SSI </h5>
@@ -354,9 +415,10 @@
                 </a>
             </div>
         </div>
-  
+    </div>
 
-        <div class="col-md-6" data-aos="flip-left">
+    <div class="row g-4 mb-5">
+        <div class="col-md-4" data-aos="flip-left">
             <div class="hcc-card text-center">
                <i class="fa-solid fa-magnifying-glass-chart"></i>
                 <h5> Checker </h5>
@@ -367,7 +429,27 @@
             </div>
         </div>
 
-             
+        <div class="col-md-4" data-aos="flip-left" data-aos-delay="150">
+            <div class="hcc-card text-center">
+               <i class="fa-solid fa-screwdriver-wrench"></i>
+                <h5>ATP 2026</h5>
+                <p>Annual Training Program HCC 2026</p>
+                <a href="https://portal-training.vercel.app/atp.html" class="btn btn-primary mt-3">
+                    Lihat Detail
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-4" data-aos="flip-left" data-aos-delay="150">
+            <div class="hcc-card text-center">
+                <i class="fa-solid fa-clipboard-check"></i>
+                <h5>PIKACU</h5>
+                <p>Penilaian Kinerja COU</p>
+                <a href="https://pikacu.softr.app" class="btn btn-primary mt-3">
+                    Lihat Detail
+                </a>
+            </div>
+        </div>       
     </div>
     
 </section>
