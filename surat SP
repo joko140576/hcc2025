@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SuratKu — Sistem Arsip Surat Digital</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<style>
+  /* ============================================
+   SuratKu — Custom Stylesheet
+   ============================================ */
+
+:root {
+  --primary:    #1a3c5e;
+  --accent:     #e8a020;
+  --accent2:    #2e7d9c;
+  --bg:         #f4f6f9;
+  --card-bg:    #ffffff;
+  --text:       #1c2b3a;
+  --muted:      #6c7a89;
+  --border:     #dce3ea;
+  --danger:     #c0392b;
+  --success:    #1e8a5e;
+  --radius:     14px;
+  --shadow:     0 4px 24px rgba(26,60,94,0.08);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* ---- HEADER ---- */
+.site-header {
+  background: var(--primary);
+  padding: 22px 0 20px;
+  position: relative;
+  overflow: hidden;
+}
+.header-accent {
+  position: absolute;
+  top: -40px; right: -60px;
+  width: 260px; height: 260px;
+  background: var(--accent);
+  border-radius: 50%;
+  opacity: 0.12;
+}
+.logo-mark {
+  font-size: 2rem;
+  background: rgba(255,255,255,0.12);
+  border-radius: 12px;
+  width: 52px; height: 52px;
+  display: flex; align-items: center; justify-content: center;
+}
+.site-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+.site-sub {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.6);
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+/* ---- CARD SECTION ---- */
+.card-section {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 36px 36px 32px;
+  position: relative;
+  border-top: 4px solid var(--primary);
+  transition: box-shadow 0.2s;
+}
+.card-section:hover {
+  box-shadow: 0 8px 32px rgba(26,60,94,0.13);
+}
+.section-tag {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--accent);
+  background: rgba(232,160,32,0.1);
+  border-radius: 6px;
+  display: inline-block;
+  padding: 3px 10px;
+  margin-bottom: 8px;
+}
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+.section-desc {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 0;
+}
+
+/* ---- FORM CONTROLS ---- */
+.form-label-custom {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 7px;
+  display: block;
+  letter-spacing: 0.2px;
+}
+.required { color: var(--danger); }
+
+.form-control-custom {
+  width: 100%;
+  background: #f8fafc;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.form-control-custom:focus {
+  border-color: var(--accent2);
+  box-shadow: 0 0 0 3px rgba(46,125,156,0.12);
+  background: #fff;
+}
+.form-control-custom.is-invalid {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(192,57,43,0.1);
+}
+select.form-control-custom {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236c7a89' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+}
+
+.invalid-msg {
+  font-size: 0.78rem;
+  color: var(--danger);
+  margin-top: 5px;
+  display: none;
+}
+.invalid-msg.show { display: block; }
+
+/* ---- UPLOAD ZONE ---- */
+.upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 32px 24px;
+  text-align: center;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  position: relative;
+}
+.upload-zone:hover,
+.upload-zone.drag-over {
+  border-color: var(--accent2);
+  background: rgba(46,125,156,0.04);
+}
+.upload-zone.has-file {
+  border-style: solid;
+  border-color: var(--success);
+  background: rgba(30,138,94,0.04);
+}
+.upload-icon { font-size: 2.2rem; margin-bottom: 8px; }
+.upload-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.upload-hint {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* ---- FILE PREVIEW ---- */
+.file-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(30,138,94,0.08);
+  border-radius: 8px;
+  padding: 8px 14px;
+  margin-top: 14px;
+  justify-content: center;
+}
+.file-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--success);
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.file-size {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.btn-remove {
+  background: none;
+  border: none;
+  color: var(--danger);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+/* ---- BUTTONS ---- */
+.btn-submit {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 32px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s, transform 0.1s;
+}
+.btn-submit:hover { background: #16324f; transform: translateY(-1px); }
+.btn-submit:active { transform: translateY(0); }
+.btn-submit:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+
+.btn-reset {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 24px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-reset:hover { border-color: var(--danger); color: var(--danger); }
+
+/* ---- SPINNER ---- */
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---- ALERT ---- */
+.alert-custom {
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  border: none;
+}
+.alert-custom.success {
+  background: rgba(30,138,94,0.1);
+  color: var(--success);
+  border-left: 4px solid var(--success);
+}
+.alert-custom.error {
+  background: rgba(192,57,43,0.08);
+  color: var(--danger);
+  border-left: 4px solid var(--danger);
+}
+
+/* ---- FOOTER ---- */
+.site-footer {
+  margin-top: 40px;
+  padding: 20px 0;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 576px) {
+  .card-section { padding: 24px 18px; }
+}
+
+</style>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-accent"></div>
+    <div class="container">
+      <div class="d-flex align-items-center gap-3">
+        <div class="logo-mark">📂</div>
+        <div>
+          <h1 class="site-title">Surat SP - Filing </h1>
+          <p class="site-sub">Sistem Arsip Surat Digital</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="container py-5">
+
+    <!-- Status Alert -->
+    <div id="alertBox" class="alert-custom d-none mb-4" role="alert"></div>
+
+    <form id="mainForm" novalidate>
+
+      <!-- Section 1: Data Penginput -->
+      <div class="card-section mb-4">
+        <div class="section-tag">01</div>
+        <h2 class="section-title">Data Penginput</h2>
+        <p class="section-desc">Isi identitas lengkap penginput surat</p>
+
+        <div class="row g-4 mt-1">
+          <!-- Nama -->
+          <div class="col-md-6">
+            <label class="form-label-custom" for="nama">Nama Lengkap <span class="required">*</span></label>
+            <input type="text" class="form-control-custom" id="nama" placeholder="Masukkan nama lengkap" required/>
+            <div class="invalid-msg">Nama wajib diisi.</div>
+          </div>
+
+          <!-- NPP -->
+          <div class="col-md-6">
+            <label class="form-label-custom" for="npp">NPP <span class="required">*</span></label>
+            <input type="text" class="form-control-custom" id="npp" placeholder="Nomor Pokok Pegawai" required/>
+            <div class="invalid-msg">NPP wajib diisi.</div>
+          </div>
+
+          <!-- Region -->
+          <div class="col-md-4">
+            <label class="form-label-custom" for="region">Region <span class="required">*</span></label>
+            <select class="form-control-custom" id="region" required>
+              <option value="">— Pilih Region —</option>
+              <option value="Region 1">Region 1</option>
+              <option value="Region 2">Region 2</option>
+              <option value="Region 3">Region 3</option>
+              <option value="Region 4">Region 4</option>
+              <option value="Region 5">Region 5</option>
+              <option value="Region 6">Region 6</option>
+              <option value="Region 7">Region 7</option>
+              <option value="Region 8">Region 8</option>
+              <option value="Region 9">Region 9</option>
+              <option value="Region 10">Region 10</option>
+            </select>
+            <div class="invalid-msg">Region wajib dipilih.</div>
+          </div>
+
+          <!-- Divisi -->
+          <div class="col-md-4">
+            <label class="form-label-custom" for="divisi">Divisi <span class="required">*</span></label>
+            <select class="form-control-custom" id="divisi" required>
+              <option value="">— Pilih Divisi —</option>
+              <option value="HCC">HCC</option>
+              <option value="INA">INA</option>
+              <option value="PLM">PLM</option>
+              <option value="FRM">FRM</option>
+              <option value="SBD">SBD</option>
+              <option value="MBS">MBS</option>
+              <option value="OPR1">OPR1</option>
+              <option value="OPR2">OPR2</option>
+              <option value="OPS">OPS</option>
+              <option value="CSI">CSI</option>
+            </select>
+            <div class="invalid-msg">Divisi wajib dipilih.</div>
+          </div>
+
+          <!-- COU -->
+          <div class="col-md-4">
+            <label class="form-label-custom" for="cou">COU <span class="required">*</span></label>
+            <input type="text" class="form-control-custom" id="cou" placeholder="Masukkan COU" required/>
+            <div class="invalid-msg">COU wajib diisi.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Dokumen Surat -->
+      <div class="card-section mb-4">
+        <div class="section-tag">02</div>
+        <h2 class="section-title">Dokumen Surat</h2>
+        <p class="section-desc">Unggah dan lengkapi informasi dokumen surat</p>
+
+        <div class="row g-4 mt-1">
+          <!-- SP -->
+          <div class="col-md-4">
+            <label class="form-label-custom" for="sp">SP <span class="required">*</span></label>
+            <select class="form-control-custom" id="sp" required>
+              <option value="">— Pilih SP —</option>
+              <option value="SP 1">SP 1</option>
+              <option value="SP 2">SP 2</option>
+              <option value="SP 3">SP 3</option>
+            </select>
+            <div class="invalid-msg">SP wajib dipilih.</div>
+          </div>
+
+          <!-- Keterangan -->
+          <div class="col-md-8">
+            <label class="form-label-custom" for="keterangan">Keterangan</label>
+            <input type="text" class="form-control-custom" id="keterangan" placeholder="Keterangan tambahan (opsional)"/>
+          </div>
+
+          <!-- Upload File -->
+          <div class="col-12">
+            <label class="form-label-custom">Upload Dokumen <span class="required">*</span></label>
+            <div class="upload-zone" id="uploadZone">
+              <input type="file" id="fileInput" accept=".pdf,.doc,.docx" class="d-none"/>
+              <div class="upload-icon">📄</div>
+              <p class="upload-title">Klik atau seret file ke sini</p>
+              <p class="upload-hint">Format: PDF, DOC, DOCX &nbsp;·&nbsp; Maks. 10 MB</p>
+              <div id="filePreview" class="file-preview d-none">
+                <span class="file-name" id="fileName"></span>
+                <span class="file-size" id="fileSize"></span>
+                <button type="button" class="btn-remove" id="removeFile">✕</button>
+              </div>
+            </div>
+            <div class="invalid-msg" id="fileError" style="display:none">File wajib diunggah (maks. 10 MB, format PDF/DOC/DOCX).</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="text-end">
+        <button type="button" class="btn-reset me-2" id="btnReset">Reset Form</button>
+        <button type="submit" class="btn-submit" id="btnSubmit">
+          <span id="btnText">Simpan Surat</span>
+          <span id="btnSpinner" class="spinner d-none"></span>
+        </button>
+      </div>
+
+    </form>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>SuratKu &copy; 2025 &mdash; Sistem Arsip Surat Digital</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    /**
+ * SuratKu — script.js
+ * Handles form validation, file upload UX, and submission to Google Apps Script
+ */
+
+// ============================================================
+// ⚙️  GANTI URL INI dengan URL deploy Google Apps Script kamu
+// ============================================================
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxE9GI2w8Q-DJIK_J1RzozjVk6YeBY2RPfgiNbi7Je5ND--HI6I9lNhtaLsvzEp-v9o/exec";
+// ============================================================
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+
+// ---- DOM References ----
+const form        = document.getElementById("mainForm");
+const uploadZone  = document.getElementById("uploadZone");
+const fileInput   = document.getElementById("fileInput");
+const filePreview = document.getElementById("filePreview");
+const fileName    = document.getElementById("fileName");
+const fileSize    = document.getElementById("fileSize");
+const removeFile  = document.getElementById("removeFile");
+const fileError   = document.getElementById("fileError");
+const alertBox    = document.getElementById("alertBox");
+const btnSubmit   = document.getElementById("btnSubmit");
+const btnText     = document.getElementById("btnText");
+const btnSpinner  = document.getElementById("btnSpinner");
+const btnReset    = document.getElementById("btnReset");
+
+let selectedFile = null;
+
+// ============================================================
+// Upload Zone — Click & Drag-and-Drop
+// ============================================================
+uploadZone.addEventListener("click", () => fileInput.click());
+
+uploadZone.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  uploadZone.classList.add("drag-over");
+});
+uploadZone.addEventListener("dragleave", () => uploadZone.classList.remove("drag-over"));
+uploadZone.addEventListener("drop", (e) => {
+  e.preventDefault();
+  uploadZone.classList.remove("drag-over");
+  const file = e.dataTransfer.files[0];
+  if (file) handleFile(file);
+});
+
+fileInput.addEventListener("change", () => {
+  if (fileInput.files[0]) handleFile(fileInput.files[0]);
+});
+
+removeFile.addEventListener("click", (e) => {
+  e.stopPropagation();
+  clearFile();
+});
+
+function handleFile(file) {
+  const allowed = ["application/pdf",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
+
+  if (!allowed.includes(file.type) && !file.name.match(/\.(pdf|doc|docx)$/i)) {
+    showFileError("Format tidak didukung. Gunakan PDF, DOC, atau DOCX.");
+    return;
+  }
+  if (file.size > MAX_FILE_SIZE) {
+    showFileError("Ukuran file melebihi 10 MB.");
+    return;
+  }
+
+  selectedFile = file;
+  fileName.textContent = file.name;
+  fileSize.textContent = formatBytes(file.size);
+  filePreview.classList.remove("d-none");
+  uploadZone.classList.add("has-file");
+  hideFileError();
+}
+
+function clearFile() {
+  selectedFile = null;
+  fileInput.value = "";
+  filePreview.classList.add("d-none");
+  uploadZone.classList.remove("has-file");
+}
+
+function showFileError(msg) {
+  fileError.textContent = msg;
+  fileError.style.display = "block";
+}
+function hideFileError() {
+  fileError.style.display = "none";
+}
+
+function formatBytes(bytes) {
+  if (bytes < 1024) return bytes + " B";
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+  return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+}
+
+// ============================================================
+// Form Validation
+// ============================================================
+function validateField(id) {
+  const el = document.getElementById(id);
+  const msg = el.parentElement.querySelector(".invalid-msg");
+  if (!el.value.trim()) {
+    el.classList.add("is-invalid");
+    if (msg) msg.classList.add("show");
+    return false;
+  }
+  el.classList.remove("is-invalid");
+  if (msg) msg.classList.remove("show");
+  return true;
+}
+
+// Live validation on blur
+["nama", "npp", "region", "divisi", "cou", "sp"].forEach((id) => {
+  document.getElementById(id).addEventListener("blur", () => validateField(id));
+  document.getElementById(id).addEventListener("input",  () => validateField(id));
+});
+
+function validateAll() {
+  const fields = ["nama", "npp", "region", "divisi", "cou", "sp"];
+  let ok = fields.map(validateField).every(Boolean);
+
+  // File check
+  if (!selectedFile) {
+    showFileError("File wajib diunggah (maks. 10 MB, format PDF/DOC/DOCX).");
+    ok = false;
+  } else {
+    hideFileError();
+  }
+
+  return ok;
+}
+
+// ============================================================
+// Submit
+// ============================================================
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  hideAlert();
+
+  if (!validateAll()) {
+    showAlert("⚠️ Harap lengkapi semua field yang wajib diisi.", "error");
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    // Convert file to Base64
+    const base64 = await toBase64(selectedFile);
+
+    const payload = {
+      nama:       document.getElementById("nama").value.trim(),
+      npp:        document.getElementById("npp").value.trim(),
+      region:     document.getElementById("region").value,
+      divisi:     document.getElementById("divisi").value,
+      cou:        document.getElementById("cou").value.trim(),
+      sp:         document.getElementById("sp").value,
+      keterangan: document.getElementById("keterangan").value.trim(),
+      fileName:   selectedFile.name,
+      fileType:   selectedFile.type || "application/octet-stream",
+      fileData:   base64,
+    };
+
+    const res = await fetch(GAS_URL, {
+      method:  "POST",
+      // no CORS mode needed — GAS handles it via doPost
+      headers: { "Content-Type": "text/plain" }, // text/plain avoids CORS preflight
+      body:    JSON.stringify(payload),
+    });
+
+    const result = await res.json();
+
+    if (result.status === "success") {
+      showAlert("✅ Surat berhasil disimpan! Data telah tercatat di Google Sheet dan file tersimpan di Google Drive.", "success");
+      resetForm();
+    } else {
+      showAlert("❌ Gagal menyimpan: " + (result.message || "Terjadi kesalahan."), "error");
+    }
+  } catch (err) {
+    console.error(err);
+    showAlert("❌ Gagal menghubungi server. Pastikan URL GAS sudah benar dan koneksi internet aktif.", "error");
+  } finally {
+    setLoading(false);
+  }
+});
+
+// ============================================================
+// Reset
+// ============================================================
+btnReset.addEventListener("click", () => {
+  if (confirm("Reset semua isian form?")) resetForm();
+});
+
+function resetForm() {
+  form.reset();
+  clearFile();
+  hideAlert();
+  document.querySelectorAll(".is-invalid").forEach((el) => el.classList.remove("is-invalid"));
+  document.querySelectorAll(".invalid-msg.show").forEach((el) => el.classList.remove("show"));
+}
+
+// ============================================================
+// Helpers
+// ============================================================
+function setLoading(state) {
+  btnSubmit.disabled = state;
+  btnText.textContent = state ? "Menyimpan..." : "Simpan Surat";
+  btnSpinner.classList.toggle("d-none", !state);
+}
+
+function showAlert(msg, type) {
+  alertBox.textContent = msg;
+  alertBox.className = `alert-custom ${type}`;
+  alertBox.classList.remove("d-none");
+  alertBox.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+function hideAlert() {
+  alertBox.className = "alert-custom d-none";
+}
+
+function toBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload  = () => resolve(reader.result.split(",")[1]);
+    reader.onerror = () => reject(new Error("Gagal membaca file."));
+    reader.readAsDataURL(file);
+  });
+}
+
+  </script>
+
+
+</body>
+</html>
