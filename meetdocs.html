@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MeetDocs — Dokumentasi Meeting</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0d0d14;
+    --paper: #f5f3ee;
+    --cream: #ede9e0;
+    --accent: #e05c2a;
+    --accent2: #2a6ee0;
+    --gold: #c9a84c;
+    --muted: #7a7872;
+    --border: #d4cfc5;
+    --white: #ffffff;
+    --success: #2ecc71;
+    --shadow: 0 8px 32px rgba(13,13,20,0.10);
+    --shadow-lg: 0 20px 60px rgba(13,13,20,0.16);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 56px 40px 48px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .header-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin-bottom: 20px;
+    animation: fadeSlideDown 0.6s ease both;
+  }
+
+  .header-tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    animation: fadeSlideDown 0.7s ease 0.1s both;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .header-sub {
+    margin-top: 14px;
+    color: #a09d96;
+    font-size: 1rem;
+    font-weight: 300;
+    max-width: 460px;
+    animation: fadeSlideDown 0.7s ease 0.2s both;
+  }
+
+  .header-deco {
+    position: absolute;
+    right: -40px; top: -60px;
+    width: 380px; height: 380px;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: spinSlow 30s linear infinite;
+  }
+
+  .header-deco::after {
+    content: '';
+    position: absolute;
+    top: 40px; left: 40px; right: 40px; bottom: 40px;
+    border: 1px solid rgba(201,168,76,0.12);
+    border-radius: 50%;
+  }
+
+  /* ── STEP INDICATORS ── */
+  .steps-bar {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    position: relative;
+    top: -1px;
+  }
+
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    padding: 20px 24px;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .step-item:first-child { border-radius: 0 0 0 16px; border-right: none; }
+  .step-item:last-child  { border-radius: 0 0 16px 0; }
+
+  .step-item.active {
+    background: var(--white);
+    border-bottom-color: var(--white);
+    box-shadow: 0 4px 20px rgba(13,13,20,0.08);
+    z-index: 1;
+  }
+
+  .step-num {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    background: var(--border);
+    color: var(--muted);
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+  }
+
+  .step-item.active .step-num {
+    background: var(--accent);
+    color: white;
+  }
+
+  .step-item.done .step-num {
+    background: var(--success);
+    color: white;
+  }
+
+  .step-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    transition: color 0.3s;
+  }
+
+  .step-item.active .step-label { color: var(--ink); font-weight: 600; }
+
+  /* ── MAIN CONTENT ── */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 40px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    display: none;
+    animation: fadeSlideUp 0.45s ease both;
+  }
+  .section.active { display: block; }
+
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 36px;
+  }
+
+  .section-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .section-icon.orange { background: #fff0eb; }
+  .section-icon.blue   { background: #ebf0ff; }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .section-desc {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 36px;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+    transition: box-shadow 0.3s;
+  }
+
+  .card:hover { box-shadow: var(--shadow-lg); }
+
+  /* ── FORM GRID ── */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .form-grid .full { grid-column: 1 / -1; }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  label .req { color: var(--accent); margin-left: 3px; }
+
+  input[type=text],
+  input[type=date],
+  select,
+  textarea {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    background: var(--paper);
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    width: 100%;
+    -webkit-appearance: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(224,92,42,0.1);
+  }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7872' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+    cursor: pointer;
+  }
+
+  textarea { resize: vertical; min-height: 100px; }
+
+  /* Peserta chips */
+  .chips-input-wrapper {
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    background: var(--paper);
+    padding: 8px 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    min-height: 48px;
+    cursor: text;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  }
+
+  .chips-input-wrapper:focus-within {
+    border-color: var(--accent);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(224,92,42,0.1);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px 4px 12px;
+    border-radius: 100px;
+    animation: chipPop 0.2s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+
+  .chip-remove {
+    cursor: pointer;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    transition: background 0.2s;
+  }
+
+  .chip-remove:hover { background: var(--accent); }
+
+  .chips-text-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--ink);
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .chips-hint {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* ── UPLOAD ZONE ── */
+  .upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--paper);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .upload-zone:hover, .upload-zone.dragging {
+    border-color: var(--accent2);
+    background: #f0f4ff;
+  }
+
+  .upload-zone.has-file {
+    border-color: var(--success);
+    background: #f0fff6;
+  }
+
+  .upload-zone input[type=file] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+  }
+
+  .upload-icon {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    margin: 0 auto 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    transition: transform 0.3s;
+  }
+
+  .upload-zone:hover .upload-icon { transform: translateY(-4px); }
+
+  .upload-icon.doc { background: #e8f0fe; }
+  .upload-icon.photo { background: #fff3e0; }
+
+  .upload-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .upload-sub {
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+
+  .upload-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 100px;
+    margin-bottom: 14px;
+  }
+
+  .upload-badge.optional { background: #e8f0fe; color: var(--accent2); }
+  .upload-badge.required { background: #fff0eb; color: var(--accent); }
+
+  .file-preview {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-top: 12px;
+    animation: fadeSlideUp 0.3s ease;
+  }
+
+  .file-preview.show { display: flex; }
+
+  .file-icon { font-size: 28px; }
+
+  .file-info { flex: 1; text-align: left; }
+
+  .file-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 220px;
+  }
+
+  .file-size { font-size: 11px; color: var(--muted); }
+
+  .file-remove {
+    cursor: pointer;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--cream);
+    border: none;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+
+  .file-remove:hover { background: #ffddd3; }
+
+  .upload-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  /* ── BUTTONS ── */
+  .btn-row {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .btn {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 13px 28px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: 0.01em;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 1.5px solid var(--border);
+  }
+
+  .btn-ghost:hover { border-color: var(--ink); color: var(--ink); }
+
+  .btn-primary {
+    background: var(--ink);
+    color: var(--white);
+    box-shadow: 0 4px 14px rgba(13,13,20,0.2);
+  }
+
+  .btn-primary:hover {
+    background: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(224,92,42,0.3);
+  }
+
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-submit {
+    background: var(--accent);
+    color: white;
+    box-shadow: 0 4px 16px rgba(224,92,42,0.3);
+  }
+
+  .btn-submit:hover {
+    background: #c44e22;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(224,92,42,0.4);
+  }
+
+  .btn-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* ── PROGRESS ── */
+  .progress-bar-wrap {
+    background: var(--cream);
+    border-radius: 100px;
+    height: 4px;
+    overflow: hidden;
+    margin-bottom: 40px;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 100px;
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  /* ── SUCCESS STATE ── */
+  .success-screen {
+    display: none;
+    text-align: center;
+    padding: 60px 40px;
+    animation: fadeSlideUp 0.5s ease;
+  }
+
+  .success-screen.show { display: block; }
+
+  .success-icon {
+    width: 88px; height: 88px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 38px;
+    margin: 0 auto 24px;
+    box-shadow: 0 12px 40px rgba(46,204,113,0.3);
+    animation: successPop 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.2s both;
+  }
+
+  .success-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 12px;
+  }
+
+  .success-sub { color: var(--muted); font-size: 1rem; max-width: 440px; margin: 0 auto 32px; }
+
+  .success-meta {
+    display: inline-flex;
+    gap: 24px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 32px;
+    margin-bottom: 32px;
+  }
+
+  .meta-item { text-align: center; }
+  .meta-label { font-size: 11px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  .meta-value { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-top: 4px; }
+
+  /* ── LOADER ── */
+  .loader-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(245,243,238,0.92);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .loader-overlay.show { display: flex; }
+
+  .loader-spinner {
+    width: 52px; height: 52px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  .loader-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--ink);
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: var(--shadow-lg);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.error { background: #c0392b; }
+  .toast.success-toast { background: #27ae60; }
+
+  /* ── DIVIDER ── */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 28px 0;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── CONFIG BANNER ── */
+  .config-banner {
+    background: linear-gradient(135deg, #fff8e8, #fff3d6);
+    border: 1px solid #f0d88a;
+    border-radius: 14px;
+    padding: 18px 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .config-banner-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+
+  .config-banner-text { font-size: 13px; line-height: 1.6; color: #6b5200; }
+  .config-banner-text strong { font-weight: 700; display: block; margin-bottom: 2px; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeSlideDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes spinSlow { to { transform: rotate(360deg); } }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.5; transform: scale(0.85); }
+  }
+
+  @keyframes chipPop {
+    from { opacity: 0; transform: scale(0.7); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes successPop {
+    from { opacity: 0; transform: scale(0.5); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .header-inner { padding: 40px 24px 36px; }
+    main { padding: 28px 24px 60px; }
+    .steps-bar { padding: 0 24px; }
+    .step-label { display: none; }
+    .form-grid { grid-template-columns: 1fr; }
+    .upload-grid { grid-template-columns: 1fr; }
+    .card { padding: 24px; }
+    .success-meta { flex-direction: column; gap: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div class="loader-overlay" id="loader">
+  <div class="loader-spinner"></div>
+  <div class="loader-text">Menyimpan data...</div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-deco"></div>
+  <div class="header-inner">
+    <div class="header-tag">Sistem Dokumentasi</div>
+    <h1>Meet<span>Docs</span></h1>
+    <p class="header-sub">Catat, simpan, dan dokumentasikan setiap meeting dengan rapi dan terstruktur.</p>
+  </div>
+</header>
+
+<!-- STEP BAR -->
+<div class="steps-bar">
+  <div class="step-item active" id="step-tab-1" onclick="goToStep(1)">
+    <div class="step-num" id="step-num-1">1</div>
+    <div class="step-label">Info Meeting</div>
+  </div>
+  <div class="step-item" id="step-tab-2" onclick="goToStep(2)">
+    <div class="step-num" id="step-num-2">2</div>
+    <div class="step-label">Upload Dokumen</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar" id="progressBar" style="width: 50%"></div>
+  </div>
+
+  <!-- SUCCESS SCREEN -->
+  <div class="success-screen" id="successScreen">
+    <div class="success-icon">✓</div>
+    <div class="success-title">Dokumentasi Tersimpan!</div>
+    <p class="success-sub">Data meeting berhasil disimpan ke Google Sheets dan file telah diupload ke Google Drive.</p>
+    <div class="success-meta">
+      <div class="meta-item">
+        <div class="meta-label">Disimpan oleh</div>
+        <div class="meta-value" id="successNama">—</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Tanggal</div>
+        <div class="meta-value" id="successTanggal">—</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Tema</div>
+        <div class="meta-value" id="successThema">—</div>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="resetForm()">＋ Tambah Meeting Baru</button>
+  </div>
+
+  <!-- SECTION 1 -->
+  <div class="section active" id="section1">
+    <div class="section-header">
+      <div class="section-icon orange">📋</div>
+      <div>
+        <div class="section-title">Informasi Meeting</div>
+        <div class="section-desc">Isi detail lengkap pertemuan yang akan didokumentasikan</div>
+      </div>
+    </div>
+
+    
+
+    <div class="card">
+      <div class="form-grid">
+        <div class="field">
+          <label>Nama Pencatat <span class="req">*</span></label>
+          <input type="text" id="namaPencatat" placeholder="Nama lengkap Anda">
+        </div>
+        <div class="field">
+          <label>Tempat Meeting <span class="req">*</span></label>
+          <input type="text" id="tempatMeeting" placeholder="Contoh: Ruang Rapat A, Zoom...">
+        </div>
+        <div class="field">
+          <label>Tanggal Meeting <span class="req">*</span></label>
+          <input type="date" id="tanggalMeeting">
+        </div>
+        <div class="field">
+          <label>Jadwal Berulang</label>
+          <select id="scheduleMeeting">
+            <option value="">— Tidak Berulang —</option>
+            <option value="weekly">📅 Mingguan (Weekly)</option>
+            <option value="monthly">📆 Bulanan (Monthly)</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label>Tema Meeting <span class="req">*</span></label>
+          <input type="text" id="themaMeeting" placeholder="Topik utama yang dibahas...">
+        </div>
+        <div class="field full">
+          <label>Peserta Meeting <span class="req">*</span></label>
+          <div class="chips-input-wrapper" id="chipsWrapper">
+            <input type="text" class="chips-text-input" id="pesertaInput" placeholder="Ketik nama, tekan Enter atau koma...">
+          </div>
+          <div class="chips-hint">Tekan Enter atau koma (,) untuk menambah peserta</div>
+          <input type="hidden" id="pesertaHidden">
+        </div>
+        <div class="field full">
+          <label>Keterangan Tambahan</label>
+          <textarea id="keteranganTambahan" placeholder="Catatan penting, keputusan, tindak lanjut, atau informasi lainnya..."></textarea>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="nextStep()">
+          Lanjut ke Upload <span>→</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section" id="section2">
+    <div class="section-header">
+      <div class="section-icon blue">📁</div>
+      <div>
+        <div class="section-title">Upload Dokumen</div>
+        <div class="section-desc">Lampirkan notulen dan foto bukti kehadiran meeting</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="upload-grid">
+        <!-- Notulen -->
+        <div>
+          <div class="upload-zone" id="zone-notulen" ondragover="handleDrag(event,'notulen')" ondragleave="handleDragLeave('notulen')" ondrop="handleDrop(event,'notulen')">
+            <input type="file" id="fileNotulen" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx" onchange="handleFile(this,'notulen')">
+            <div class="upload-badge optional">Opsional</div>
+            <div class="upload-icon doc">📄</div>
+            <div class="upload-title">Upload Notulen</div>
+            <p class="upload-sub">PDF, Word, Excel, PPT<br>Maks. 20 MB</p>
+          </div>
+          <div class="file-preview" id="preview-notulen">
+            <div class="file-icon" id="icon-notulen">📄</div>
+            <div class="file-info">
+              <div class="file-name" id="name-notulen"></div>
+              <div class="file-size" id="size-notulen"></div>
+            </div>
+            <button class="file-remove" onclick="removeFile('notulen')">✕</button>
+          </div>
+        </div>
+
+        <!-- Evidence Foto -->
+        <div>
+          <div class="upload-zone" id="zone-foto" ondragover="handleDrag(event,'foto')" ondragleave="handleDragLeave('foto')" ondrop="handleDrop(event,'foto')">
+            <input type="file" id="fileFoto" accept="image/*" onchange="handleFile(this,'foto')">
+            <div class="upload-badge required">Wajib ✦</div>
+            <div class="upload-icon photo">📸</div>
+            <div class="upload-title">Upload Foto Evidence</div>
+            <p class="upload-sub">JPG, PNG, WEBP, HEIC<br>Maks. 20 MB</p>
+          </div>
+          <div class="file-preview" id="preview-foto">
+            <div class="file-icon" id="icon-foto">📸</div>
+            <div class="file-info">
+              <div class="file-name" id="name-foto"></div>
+              <div class="file-size" id="size-foto"></div>
+            </div>
+            <button class="file-remove" onclick="removeFile('foto')">✕</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider">Ringkasan Meeting</div>
+
+      <!-- Summary Card -->
+      <div style="background:var(--paper);border:1px solid var(--border);border-radius:12px;padding:20px;font-size:13px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;" id="summaryGrid">
+          <div><span style="color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em;">Pencatat</span><div style="font-weight:600;margin-top:3px;" id="sum-nama">—</div></div>
+          <div><span style="color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em;">Tempat</span><div style="font-weight:600;margin-top:3px;" id="sum-tempat">—</div></div>
+          <div><span style="color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em;">Tanggal</span><div style="font-weight:600;margin-top:3px;" id="sum-tanggal">—</div></div>
+          <div><span style="color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em;">Jadwal</span><div style="font-weight:600;margin-top:3px;" id="sum-schedule">—</div></div>
+          <div style="grid-column:1/-1"><span style="color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em;">Tema</span><div style="font-weight:600;margin-top:3px;" id="sum-thema">—</div></div>
+          <div style="grid-column:1/-1"><span style="color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em;">Peserta</span><div style="font-weight:600;margin-top:3px;color:var(--accent2);" id="sum-peserta">—</div></div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost" onclick="prevStep()">← Kembali</button>
+        <button class="btn btn-submit" id="submitBtn" onclick="submitForm()">
+          💾 Simpan Dokumentasi
+        </button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  // ── CONFIG ──────────────────────────────────────────────────────────────
+  // Ganti URL ini dengan URL deployment Google Apps Script Anda
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxNh7gd6jhaIsj41J_l_DGaQrvCAQr2AJwgSl3hw1KOw4-ke_HUaaYTaImeHXvp38N7Yg/exec';
+  // ────────────────────────────────────────────────────────────────────────
+
+  let currentStep = 1;
+  let pesertaList = [];
+  let files = { notulen: null, foto: null };
+
+  // Set default date to today
+  document.getElementById('tanggalMeeting').valueAsDate = new Date();
+
+  // ── CHIPS (Peserta) ──────────────────────────────────────────────────────
+  const chipsWrapper = document.getElementById('chipsWrapper');
+  const pesertaInput = document.getElementById('pesertaInput');
+
+  chipsWrapper.addEventListener('click', () => pesertaInput.focus());
+
+  pesertaInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      addPeserta(pesertaInput.value);
+    }
+    if (e.key === 'Backspace' && pesertaInput.value === '' && pesertaList.length > 0) {
+      removePeserta(pesertaList.length - 1);
+    }
+  });
+
+  pesertaInput.addEventListener('blur', () => {
+    if (pesertaInput.value.trim()) addPeserta(pesertaInput.value);
+  });
+
+  function addPeserta(val) {
+    const name = val.replace(/,/g, '').trim();
+    if (!name || pesertaList.includes(name)) { pesertaInput.value = ''; return; }
+    pesertaList.push(name);
+    renderChips();
+    pesertaInput.value = '';
+  }
+
+  function removePeserta(idx) {
+    pesertaList.splice(idx, 1);
+    renderChips();
+  }
+
+  function renderChips() {
+    const existing = chipsWrapper.querySelectorAll('.chip');
+    existing.forEach(c => c.remove());
+    pesertaList.forEach((name, i) => {
+      const chip = document.createElement('div');
+      chip.className = 'chip';
+      chip.innerHTML = `${name}<span class="chip-remove" onclick="removePeserta(${i})">✕</span>`;
+      chipsWrapper.insertBefore(chip, pesertaInput);
+    });
+    document.getElementById('pesertaHidden').value = pesertaList.join(', ');
+  }
+
+  // ── NAVIGATION ───────────────────────────────────────────────────────────
+  function nextStep() {
+    if (!validateSection1()) return;
+    updateSummary();
+    goToStep(2);
+  }
+
+  function prevStep() { goToStep(1); }
+
+  function goToStep(step) {
+    if (step === 2 && currentStep === 1 && !validateSection1()) return;
+    currentStep = step;
+
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById(`section${step}`).classList.add('active');
+
+    document.querySelectorAll('.step-item').forEach((t, i) => {
+      t.classList.remove('active', 'done');
+      if (i + 1 < step) t.classList.add('done');
+      if (i + 1 === step) t.classList.add('active');
+    });
+
+    // Update step numbers for done steps
+    for (let i = 1; i < step; i++) {
+      document.getElementById(`step-num-${i}`).innerHTML = '✓';
+    }
+
+    document.getElementById('progressBar').style.width = step === 1 ? '50%' : '100%';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── VALIDATION ───────────────────────────────────────────────────────────
+  function validateSection1() {
+    const fields = [
+      { id: 'namaPencatat',   label: 'Nama Pencatat' },
+      { id: 'tempatMeeting',  label: 'Tempat Meeting' },
+      { id: 'tanggalMeeting', label: 'Tanggal Meeting' },
+      { id: 'themaMeeting',   label: 'Tema Meeting' },
+    ];
+
+    for (const f of fields) {
+      const el = document.getElementById(f.id);
+      if (!el.value.trim()) {
+        el.focus();
+        el.style.borderColor = 'var(--accent)';
+        showToast(`⚠️ Kolom "${f.label}" wajib diisi`, 'error');
+        setTimeout(() => el.style.borderColor = '', 2000);
+        return false;
+      }
+    }
+
+    if (pesertaList.length === 0) {
+      pesertaInput.focus();
+      showToast('⚠️ Tambahkan minimal satu peserta', 'error');
+      return false;
+    }
+
+    return true;
+  }
+
+  function validateSection2() {
+    if (!files.foto) {
+      showToast('📸 Foto evidence wajib diupload', 'error');
+      document.getElementById('zone-foto').style.borderColor = 'var(--accent)';
+      setTimeout(() => document.getElementById('zone-foto').style.borderColor = '', 2000);
+      return false;
+    }
+    return true;
+  }
+
+  // ── SUMMARY ──────────────────────────────────────────────────────────────
+  function updateSummary() {
+    const scheduleMap = { weekly: 'Mingguan', monthly: 'Bulanan', '': 'Tidak Berulang' };
+    document.getElementById('sum-nama').textContent    = v('namaPencatat') || '—';
+    document.getElementById('sum-tempat').textContent  = v('tempatMeeting') || '—';
+    document.getElementById('sum-tanggal').textContent = formatDate(v('tanggalMeeting')) || '—';
+    document.getElementById('sum-schedule').textContent= scheduleMap[v('scheduleMeeting')] || 'Tidak Berulang';
+    document.getElementById('sum-thema').textContent   = v('themaMeeting') || '—';
+    document.getElementById('sum-peserta').textContent = pesertaList.join(' • ') || '—';
+  }
+
+  function v(id) { return document.getElementById(id).value.trim(); }
+
+  function formatDate(d) {
+    if (!d) return '';
+    const [y, m, day] = d.split('-');
+    const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+    return `${parseInt(day)} ${months[parseInt(m)-1]} ${y}`;
+  }
+
+  // ── FILE UPLOAD ──────────────────────────────────────────────────────────
+  function handleFile(input, type) {
+    const file = input.files[0];
+    if (!file) return;
+    setFile(type, file);
+  }
+
+  function setFile(type, file) {
+    files[type] = file;
+    const sizeKB = (file.size / 1024).toFixed(0);
+    const sizeMB = (file.size / (1024*1024)).toFixed(2);
+    const displaySize = file.size > 1024*1024 ? `${sizeMB} MB` : `${sizeKB} KB`;
+
+    document.getElementById(`name-${type}`).textContent = file.name;
+    document.getElementById(`size-${type}`).textContent = displaySize;
+    document.getElementById(`preview-${type}`).classList.add('show');
+    document.getElementById(`zone-${type}`).classList.add('has-file');
+
+    if (type === 'foto' && file.type.startsWith('image/')) {
+      document.getElementById(`icon-${type}`).textContent = '🖼️';
+    }
+  }
+
+  function removeFile(type) {
+    files[type] = null;
+    document.getElementById(`file${type.charAt(0).toUpperCase()+type.slice(1)}`).value = '';
+    document.getElementById(`preview-${type}`).classList.remove('show');
+    document.getElementById(`zone-${type}`).classList.remove('has-file');
+    document.getElementById(`icon-${type}`).textContent = type === 'foto' ? '📸' : '📄';
+  }
+
+  function handleDrag(e, type) {
+    e.preventDefault();
+    document.getElementById(`zone-${type}`).classList.add('dragging');
+  }
+
+  function handleDragLeave(type) {
+    document.getElementById(`zone-${type}`).classList.remove('dragging');
+  }
+
+  function handleDrop(e, type) {
+    e.preventDefault();
+    document.getElementById(`zone-${type}`).classList.remove('dragging');
+    const file = e.dataTransfer.files[0];
+    if (file) setFile(type, file);
+  }
+
+  // ── SUBMIT ───────────────────────────────────────────────────────────────
+  async function submitForm() {
+    if (!validateSection2()) return;
+
+    if (SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+      showToast('⚙️ Konfigurasi SCRIPT_URL terlebih dahulu!', 'error');
+      return;
+    }
+
+    document.getElementById('loader').classList.add('show');
+
+    try {
+      // Convert files to Base64
+      const fotoBase64    = await toBase64(files.foto);
+      const notulenBase64 = files.notulen ? await toBase64(files.notulen) : null;
+
+      const payload = {
+        namaPencatat:      v('namaPencatat'),
+        tempatMeeting:     v('tempatMeeting'),
+        tanggalMeeting:    v('tanggalMeeting'),
+        scheduleMeeting:   v('scheduleMeeting'),
+        pesertaMeeting:    pesertaList.join(', '),
+        themaMeeting:      v('themaMeeting'),
+        keteranganTambahan:v('keteranganTambahan'),
+        fotoBase64,
+        fotoName:   files.foto.name,
+        fotoMime:   files.foto.type,
+        notulenBase64,
+        notulenName: files.notulen ? files.notulen.name : null,
+        notulenMime: files.notulen ? files.notulen.type : null,
+      };
+
+      const res  = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body:   JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (data.status === 'success') {
+        document.getElementById('loader').classList.remove('show');
+        showSuccessScreen();
+      } else {
+        throw new Error(data.message || 'Terjadi kesalahan');
+      }
+    } catch (err) {
+      document.getElementById('loader').classList.remove('show');
+      showToast('❌ Gagal menyimpan: ' + err.message, 'error');
+    }
+  }
+
+  function toBase64(file) {
+    return new Promise((res, rej) => {
+      const r = new FileReader();
+      r.onload  = () => res(r.result.split(',')[1]);
+      r.onerror = () => rej(new Error('File read failed'));
+      r.readAsDataURL(file);
+    });
+  }
+
+  function showSuccessScreen() {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('progressBar').style.width = '100%';
+
+    document.getElementById('successNama').textContent    = v('namaPencatat');
+    document.getElementById('successTanggal').textContent = formatDate(v('tanggalMeeting'));
+    document.getElementById('successThema').textContent   = v('themaMeeting');
+
+    document.getElementById('successScreen').classList.add('show');
+    showToast('✅ Dokumentasi berhasil disimpan!', 'success');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function resetForm() {
+    document.getElementById('successScreen').classList.remove('show');
+    document.getElementById('section1').classList.add('active');
+
+    // Reset form fields
+    ['namaPencatat','tempatMeeting','themaMeeting','keteranganTambahan'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    document.getElementById('tanggalMeeting').valueAsDate = new Date();
+    document.getElementById('scheduleMeeting').value = '';
+
+    pesertaList = [];
+    renderChips();
+    removeFile('foto');
+    removeFile('notulen');
+
+    // Reset steps
+    document.querySelectorAll('.step-item').forEach((t, i) => {
+      t.classList.remove('active','done');
+      if (i === 0) t.classList.add('active');
+    });
+    document.getElementById('step-num-1').textContent = '1';
+    document.getElementById('step-num-2').textContent = '2';
+    document.getElementById('progressBar').style.width = '50%';
+    currentStep = 1;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── TOAST ────────────────────────────────────────────────────────────────
+  let toastTimer;
+  function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (type === 'error' ? ' error' : type === 'success' ? ' success-toast' : '');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+  }
+</script>
+</body>
+</html>
