@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Name Card Generator – PT SSI</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f0f4f8;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 16px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    color: #1a3a6b;
+    margin-bottom: 6px;
+    letter-spacing: .5px;
+  }
+  .subtitle {
+    font-size: .85rem;
+    color: #666;
+    margin-bottom: 28px;
+  }
+
+  .container {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    max-width: 900px;
+  }
+
+  /* ── FORM ── */
+  .form-panel {
+    background: #fff;
+    border-radius: 14px;
+    padding: 28px 28px 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.08);
+    width: 320px;
+    flex-shrink: 0;
+  }
+
+  .form-panel h2 {
+    font-size: 1rem;
+    color: #1a3a6b;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e8edf5;
+    padding-bottom: 10px;
+  }
+
+  label {
+    display: block;
+    font-size: .8rem;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 5px;
+    margin-top: 14px;
+  }
+  label:first-of-type { margin-top: 0; }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1.5px solid #d0d8e8;
+    border-radius: 8px;
+    font-size: .88rem;
+    color: #222;
+    outline: none;
+    transition: border .2s;
+  }
+  input[type="text"]:focus { border-color: #1a3a6b; }
+
+  /* upload area */
+  .upload-area {
+    border: 2px dashed #b0c0da;
+    border-radius: 10px;
+    padding: 18px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .2s;
+    position: relative;
+    background: #f7f9fc;
+  }
+  .upload-area:hover { border-color: #1a3a6b; background: #eef2f9; }
+  .upload-area input[type="file"] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+  .upload-icon { font-size: 2rem; margin-bottom: 4px; }
+  .upload-area p { font-size: .78rem; color: #777; }
+  .upload-area p strong { color: #1a3a6b; }
+  #preview-thumb {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #1a3a6b;
+    margin-top: 10px;
+    display: none;
+  }
+
+  .btn-process {
+    margin-top: 22px;
+    width: 100%;
+    background: #1a3a6b;
+    color: #fff;
+    border: none;
+    border-radius: 9px;
+    padding: 11px;
+    font-size: .95rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: .4px;
+    transition: background .2s;
+  }
+  .btn-process:hover { background: #163060; }
+
+  /* ── PREVIEW PANEL ── */
+  .preview-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .preview-panel h2 {
+    font-size: 1rem;
+    color: #1a3a6b;
+    align-self: flex-start;
+  }
+
+  /* The card itself: 5cm × 9cm at 96 dpi ≈ 189 × 340 px */
+  /* We scale it up 1.8× for screen: 340 × 612 px */
+  #card-wrapper {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  #name-card {
+    width: 189px;
+    height: 340px;
+    transform: scale(1.8);
+    transform-origin: top center;
+    margin-bottom: calc(340px * 0.8); /* compensate scale */
+    background: #fff;
+    border: 1px solid #d0d0d0;
+    border-radius: 8px;
+    box-shadow: 0 6px 24px rgba(0,0,0,.15);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px 10px 10px;
+    font-family: Arial, sans-serif;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* top accent bar */
+  #name-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: indianred;
+  }
+
+  /* logo area */
+  .card-logo {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 5px;
+    margin-top: 2px;
+  }
+  .card-logo svg { width: 100px; height: auto; }
+  .logo-tagline {
+    font-size: 5px;
+    color: #888;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+
+  /* divider */
+  .card-divider {
+    width: 80%;
+    height: 0.8px;
+    background: #dde3ee;
+    margin: 1px 0 1px;
+  }
+
+  /* photo */
+  .card-photo {
+    width: 170px;
+    height: 200px;
+    border-radius: 5%;
+    object-fit: cover;
+    margin-bottom: 5px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .card-photo img { width: 90%; height: 90%; object-fit: contain; }
+  .photo-placeholder {
+    font-size: 28px;
+    color: black;
+  }
+
+  /* name */
+  .card-name {
+    font-size: 14px;
+    font-weight: 800;
+    color: black;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    text-align: center;
+    margin-bottom: 3px;
+    word-break: break-word;
+    padding: 0 4px;
+  }
+
+  /* npp */
+  .card-npp-label {
+    font-size: 5.5px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+  }
+  .card-npp {
+    font-size: 12px;
+    font-weight: 700;
+    color: black;
+    letter-spacing: .4px;
+    margin-bottom: 2px;
+  }
+
+  /* bottom */
+  .card-footer {
+    position: absolute;
+    bottom: 10px;
+    left: 0; right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .card-footer-line {
+    width: 80%;
+    height: 0.8px;
+    background: #dde3ee;
+    margin-bottom: 4px;
+  }
+  .card-company {
+    font-size: 5px;
+    color: indianred;
+    font-weight: 700;
+    letter-spacing: .6px;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  /* action buttons */
+  .action-buttons {
+    display: none;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .btn-save, .btn-print {
+    padding: 9px 22px;
+    border-radius: 8px;
+    border: none;
+    font-size: .85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .2s, transform .1s;
+  }
+  .btn-save {
+    background: #27ae60;
+    color: #fff;
+  }
+  .btn-save:hover { background: #219150; }
+  .btn-print {
+    background: #1a3a6b;
+    color: #fff;
+  }
+  .btn-print:hover { background: #163060; }
+  .btn-save:active, .btn-print:active { transform: scale(.97); }
+
+  /* print styles */
+  @media print {
+    body * { visibility: hidden; }
+    #print-area, #print-area * { visibility: visible; }
+    #print-area {
+      position: fixed;
+      top: 0; left: 0;
+      width: 5cm; height: 9cm;
+    }
+    #name-card {
+      transform: none;
+      margin: 0;
+      width: 5cm;
+      height: 9cm;
+      border: none;
+      box-shadow: none;
+      border-radius: 0;
+      page-break-inside: avoid;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1>🪪 Name Card Generator</h1>
+<p class="subtitle">PT Swadharma Sarana Informatika</p>
+
+<div class="container">
+
+  <!-- FORM -->
+  <div class="form-panel">
+    <h2>📋 Input Data Karyawan</h2>
+
+    <label>Foto Karyawan</label>
+    <div class="upload-area" id="upload-area">
+      <input type="file" id="photo-input" accept="image/*">
+      <div class="upload-icon">📷</div>
+      <p><strong>Klik atau seret foto</strong> ke sini</p>
+      <p>JPG, PNG, WEBP</p>
+      <img id="preview-thumb" src="" alt="preview">
+    </div>
+
+    <label for="nama-input">Nama Lengkap</label>
+    <input type="text" id="nama-input" placeholder="contoh: BUDI SANTOSO" maxlength="40">
+
+    <label for="npp-input">NPP</label>
+    <input type="text" id="npp-input" placeholder="contoh: 1234567890" maxlength="20">
+
+    <button class="btn-process" onclick="generate()">⚙️ Proses Name Card</button>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="preview-panel">
+    <h2>👁️ Preview Name Card</h2>
+
+    <div id="card-wrapper">
+      <div id="print-area">
+        <div id="name-card">
+          <!-- top accent via ::before -->
+
+          <!-- LOGO SSI -->
+          <div class="card-logo">
+            <img src="logo.png" width="70" height="45" alt="">
+          </div>
+
+          <div class="card-divider"></div>
+
+          <!-- PHOTO -->
+          <div class="card-photo" id="card-photo-el">
+            <span class="photo-placeholder">👤</span>
+          </div>
+
+          <!-- NAME -->
+          <div class="card-name" id="card-name-el">NAMA KARYAWAN</div>
+
+          <!-- NPP -->
+          <div class="card-npp-label"></div>
+          <div class="card-npp" id="card-npp-el">0000000000</div>
+
+          <!-- FOOTER -->
+          <div class="card-footer">
+            <div class="card-footer-line"></div>
+            <div class="card-company">PT Swadharma Sarana Informatika</div>
+          </div>
+        </div>
+      </div><!-- #print-area -->
+
+      <div class="action-buttons" id="action-buttons">
+        <button class="btn-save" onclick="saveCard()">💾 Simpan</button>
+        <button class="btn-print" onclick="printCard()">🖨️ Print</button>
+      </div>
+    </div><!-- #card-wrapper -->
+
+  </div>
+</div>
+
+<!-- html2canvas for save -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+let photoDataURL = null;
+
+// ── file upload preview ──
+document.getElementById('photo-input').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    photoDataURL = ev.target.result;
+    const thumb = document.getElementById('preview-thumb');
+    thumb.src = photoDataURL;
+    thumb.style.display = 'block';
+    // hide upload icon/text
+    document.querySelector('.upload-icon').style.display = 'none';
+    document.querySelectorAll('.upload-area p').forEach(p => p.style.display = 'none');
+  };
+  reader.readAsDataURL(file);
+});
+
+// ── generate ──
+function generate() {
+  const nama = document.getElementById('nama-input').value.trim();
+  const npp  = document.getElementById('npp-input').value.trim();
+
+  if (!nama) { alert('Silakan isi Nama Lengkap terlebih dahulu.'); return; }
+  if (!npp)  { alert('Silakan isi NPP terlebih dahulu.'); return; }
+
+  // update name & npp
+  document.getElementById('card-name-el').textContent = nama.toUpperCase();
+  document.getElementById('card-npp-el').textContent  = npp;
+
+  // update photo
+  const photoEl = document.getElementById('card-photo-el');
+  if (photoDataURL) {
+    photoEl.innerHTML = `<img src="${photoDataURL}" alt="foto">`;
+  } else {
+    photoEl.innerHTML = `<span class="photo-placeholder">👤</span>`;
+  }
+
+  // show card + buttons
+  document.getElementById('card-wrapper').style.display = 'flex';
+  document.getElementById('action-buttons').style.display = 'flex';
+
+  // scroll to preview
+  document.getElementById('card-wrapper').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── save as PNG ──
+async function saveCard() {
+  const card = document.getElementById('name-card');
+  // temporarily remove transform for capture
+  const origTransform = card.style.transform;
+  const origMargin    = card.style.marginBottom;
+  card.style.transform   = 'none';
+  card.style.marginBottom = '0';
+
+  try {
+    const canvas = await html2canvas(card, {
+      scale: 3,           // high-res: 3× = ~570dpi equivalent
+      useCORS: true,
+      backgroundColor: '#ffffff',
+      width: 189,
+      height: 340,
+      logging: false,
+    });
+
+    const nama = document.getElementById('nama-input').value.trim().replace(/\s+/g, '_') || 'namecard';
+    const link = document.createElement('a');
+    link.download = `NameCard_${nama}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  } finally {
+    card.style.transform   = origTransform;
+    card.style.marginBottom = origMargin;
+  }
+}
+
+// ── print ──
+function printCard() {
+  // set card to actual cm size for print
+  const card = document.getElementById('name-card');
+  card.style.transform    = 'none';
+  card.style.marginBottom = '0';
+  card.style.width        = '5cm';
+  card.style.height       = '9cm';
+  window.print();
+  // restore
+  setTimeout(() => {
+    card.style.transform    = 'scale(1.8)';
+    card.style.marginBottom = 'calc(340px * 0.8)';
+    card.style.width        = '189px';
+    card.style.height       = '340px';
+  }, 500);
+}
+</script>
+</body>
+</html>
