@@ -522,6 +522,119 @@
   }
   footer span { color: var(--accent); }
 
+  /* ── Video Player Modal ── */
+  #playerBackdrop {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.96);
+    z-index: 500;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  #playerBackdrop.open { display: flex; }
+
+  .player-header {
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    gap: 1rem;
+  }
+  .player-title {
+    font-size: 1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+  }
+  .player-meta { display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0; }
+  .player-genre-badge {
+    background: rgba(230,57,70,0.15);
+    border: 1px solid rgba(230,57,70,0.3);
+    color: var(--accent);
+    font-size: 0.65rem; font-weight: 700;
+    padding: 0.2rem 0.6rem; border-radius: 4px;
+    text-transform: uppercase; letter-spacing: 0.8px;
+  }
+  .player-rating-badge {
+    background: rgba(255,209,102,0.1);
+    border: 1px solid rgba(255,209,102,0.3);
+    color: var(--gold);
+    font-size: 0.7rem; font-weight: 800;
+    padding: 0.2rem 0.6rem; border-radius: 4px;
+  }
+  .btn-player-close {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #fff; width: 36px; height: 36px;
+    border-radius: 8px; cursor: pointer;
+    font-size: 1.1rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .2s; flex-shrink: 0;
+  }
+  .btn-player-close:hover { background: var(--accent); border-color: var(--accent); }
+
+  .player-wrap {
+    width: 100%; max-width: 1100px;
+    aspect-ratio: 16/9;
+    background: #000; border-radius: 12px;
+    overflow: hidden; position: relative;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.8);
+  }
+  .player-wrap iframe { width: 100%; height: 100%; border: none; display: block; }
+  .player-loading {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 1rem; background: #000;
+    color: var(--muted); font-size: 0.9rem;
+  }
+  .player-loading .spinner { border-top-color: var(--accent); }
+  .player-error {
+    position: absolute; inset: 0;
+    display: none; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 0.75rem; background: #000;
+    color: var(--muted); text-align: center; padding: 2rem;
+  }
+  .player-error.show { display: flex; }
+  .player-error strong { color: var(--accent); font-size: 1rem; }
+  .btn-open-drive {
+    background: var(--accent); color: #fff; border: none;
+    padding: 0.6rem 1.5rem; border-radius: 8px;
+    font-size: 0.88rem; font-weight: 700; cursor: pointer;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    margin-top: 0.25rem; transition: background .2s;
+  }
+  .btn-open-drive:hover { background: var(--accent2); }
+
+  .player-footer {
+    width: 100%; max-width: 1100px;
+    padding: 0.75rem 1rem 0.5rem;
+    display: flex; gap: 1rem; align-items: flex-start;
+  }
+  .player-synopsis { font-size: 0.82rem; color: var(--muted); line-height: 1.6; flex: 1; }
+  .btn-fullscreen {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--text); padding: 0.4rem 0.9rem;
+    border-radius: 6px; font-size: 0.78rem; cursor: pointer;
+    white-space: nowrap; display: flex; align-items: center; gap: 0.4rem;
+    transition: background .2s; flex-shrink: 0;
+  }
+  .btn-fullscreen:hover { background: rgba(255,255,255,0.14); }
+
+  @media (max-width: 768px) {
+    .player-wrap { border-radius: 6px; }
+    .player-header, .player-footer { padding: 0.5rem 0.75rem; }
+    .player-title { font-size: 0.88rem; }
+  }
+
   /* ── Poster placeholder ── */
   .poster-ph {
     width: 100%; height: 100%;
@@ -678,25 +791,50 @@
   </div>
 </div>
 
+<!-- ── VIDEO PLAYER MODAL ── -->
+<div id="playerBackdrop">
+  <div class="player-header">
+    <div class="player-title" id="playerTitle">—</div>
+    <div class="player-meta">
+      <span class="player-genre-badge" id="playerGenre"></span>
+      <span class="player-rating-badge" id="playerRating"></span>
+    </div>
+    <button class="btn-player-close" onclick="closePlayer()" title="Tutup (Esc)">✕</button>
+  </div>
+  <div class="player-wrap" id="playerWrap">
+    <div class="player-loading" id="playerLoading"><div class="spinner"></div><span>Memuat video...</span></div>
+    <div class="player-error" id="playerError">
+      <strong>⚠ Video tidak dapat dimuat</strong>
+      <span>Google Drive mungkin memblokir embed. Coba buka langsung.</span>
+      <a class="btn-open-drive" id="btnOpenDrive" href="#" target="_blank" rel="noopener">▶ Buka di Google Drive</a>
+    </div>
+  </div>
+  <div class="player-footer">
+    <div class="player-synopsis" id="playerSynopsis"></div>
+    <button class="btn-fullscreen" onclick="goFullscreen()">⛶ Fullscreen</button>
+  </div>
+</div>
+
 <!-- ── TOAST ── -->
 <div id="toast"></div>
 
 <script>
 // ── CONFIG ──────────────────────────────────────────────────
 // Ganti dengan URL deployment Apps Script Anda
-const API_URL = "https://script.google.com/macros/s/AKfycbyaKiX44FCl-5ePYgu40wsQcror-sQVzuqccs6BuwAdgLn3Yltoyr6WZCN_wTnD81_Q/exec";
+const API_URL = "GANTI_DENGAN_DEPLOYMENT_URL_APPS_SCRIPT_ANDA";
 // ────────────────────────────────────────────────────────────
 
 let allMovies   = [];
 let isAdmin     = false;
 let editingRow  = null;
+let _cbCounter  = 0;
 
 // ── Bootstrap ──
 window.onload = () => { fetchMovies(); };
 
-// ── API call via google.script.run (dalam GAS) atau fetch (eksternal) ──
+// ── JSONP — bebas CORS, semua request via GET ────────────────
 function api(payload) {
-  // Jika dijalankan di dalam Google Apps Script (embedded)
+  // Jika berjalan di dalam GAS sendiri, pakai google.script.run
   if (typeof google !== 'undefined' && google.script && google.script.run) {
     return new Promise((res, rej) => {
       google.script.run
@@ -705,12 +843,41 @@ function api(payload) {
         .handleRequest(payload);
     });
   }
-  // Jika di-deploy sebagai Web App terpisah
-  return fetch(API_URL, {
-    method : "POST",
-    headers: { "Content-Type": "application/json" },
-    body   : JSON.stringify(payload)
-  }).then(r => r.json());
+
+  // Dari domain luar (Vercel, dll) → JSONP via <script> tag
+  return new Promise((resolve, reject) => {
+    const cbName = "_gcb" + (++_cbCounter) + "_" + Date.now();
+    const timeout = setTimeout(() => {
+      delete window[cbName];
+      reject(new Error("Request timeout"));
+    }, 15000);
+
+    window[cbName] = function(data) {
+      clearTimeout(timeout);
+      delete window[cbName];
+      script.parentNode && script.parentNode.removeChild(script);
+      resolve(data);
+    };
+
+    const action  = payload.action;
+    const dataCopy = Object.assign({}, payload);
+    delete dataCopy.action;
+
+    const params = new URLSearchParams({
+      action : action,
+      cb     : cbName,
+      data   : encodeURIComponent(JSON.stringify(dataCopy))
+    });
+
+    const script = document.createElement("script");
+    script.src   = API_URL + "?" + params.toString();
+    script.onerror = () => {
+      clearTimeout(timeout);
+      delete window[cbName];
+      reject(new Error("Script load error"));
+    };
+    document.head.appendChild(script);
+  });
 }
 
 // ── Fetch Films ──
@@ -747,6 +914,9 @@ function renderMovies() {
 }
 
 function movieCard(m) {
+  // Konversi URL Google Drive ke link langsung play
+  const playUrl = convertToPlayUrl(m.movieUrl || '#');
+
   const poster = m.posterUrl
     ? `<img src="${esc(m.posterUrl)}" alt="${esc(m.title)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
     : "";
@@ -768,7 +938,7 @@ function movieCard(m) {
       <div class="card-badge-year">${esc(m.year||'')}</div>
       <div class="card-rating-badge">★ ${esc(m.rating||'?')}</div>
       <div class="card-poster-overlay">
-        <a class="watch-btn" href="${esc(m.movieUrl||'#')}" target="_blank" rel="noopener">
+        <a class="watch-btn" href="${esc(playUrl)}" target="_blank" rel="noopener">
           ▶ Tonton Sekarang
         </a>
       </div>
@@ -907,6 +1077,122 @@ function showToast(msg, type="") {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.className = "", 3000);
 }
+
+// ── Konversi URL Google Drive ke direct streaming link ────────
+// /preview  → kadang trigger download untuk MP4 besar
+// /view     → buka Google Drive viewer (play langsung di browser)
+function convertToPlayUrl(url) {
+  if (!url || url === '#') return '#';
+  const patterns = [
+    /\/file\/d\/([a-zA-Z0-9_-]+)/,
+    /id=([a-zA-Z0-9_-]+)/,
+    /\/d\/([a-zA-Z0-9_-]+)/
+  ];
+  for (const p of patterns) {
+    const m = url.match(p);
+    if (m) return `https://drive.google.com/file/d/${m[1]}/view?usp=sharing`;
+  }
+  return url; // bukan Drive URL, kembalikan apa adanya
+}
+
+// ── Google Drive URL converter (untuk player modal) ──────────
+function driveEmbedUrl(url) {
+  if (!url) return null;
+  // Ekstrak file ID dari berbagai format Google Drive URL
+  const patterns = [
+    /\/file\/d\/([a-zA-Z0-9_-]+)/,
+    /id=([a-zA-Z0-9_-]+)/,
+    /\/d\/([a-zA-Z0-9_-]+)/
+  ];
+  for (const p of patterns) {
+    const m = url.match(p);
+    if (m) return { id: m[1], embed: `https://drive.google.com/file/d/${m[1]}/preview` };
+  }
+  return null;  // bukan Google Drive URL
+}
+
+// ── Video Player ─────────────────────────────────────────────
+function openPlayer(m) {
+  const url = m.movieUrl || "";
+  const drv = driveEmbedUrl(url);
+
+  // Set info
+  document.getElementById("playerTitle").textContent   = m.title   || "Tanpa Judul";
+  document.getElementById("playerGenre").textContent   = m.genre   || "";
+  document.getElementById("playerRating").textContent  = m.rating  ? "★ " + m.rating : "";
+  document.getElementById("playerSynopsis").textContent= m.synopsis|| "";
+
+  // Reset state
+  document.getElementById("playerLoading").style.display = "flex";
+  document.getElementById("playerError").classList.remove("show");
+
+  // Hapus iframe lama
+  const old = document.getElementById("playerIframe");
+  if (old) old.remove();
+
+  if (drv) {
+    // Google Drive → embed langsung
+    document.getElementById("btnOpenDrive").href = `https://drive.google.com/file/d/${drv.id}/view`;
+
+    const iframe = document.createElement("iframe");
+    iframe.id = "playerIframe";
+    iframe.src = drv.embed;
+    iframe.allow = "autoplay; fullscreen";
+    iframe.allowFullscreen = true;
+    iframe.style.cssText = "width:100%;height:100%;border:none;display:block;";
+
+    iframe.onload = () => {
+      document.getElementById("playerLoading").style.display = "none";
+    };
+    // Timeout fallback — jika 8 detik tidak load, tampilkan error
+    const errTimer = setTimeout(() => {
+      document.getElementById("playerLoading").style.display = "none";
+      document.getElementById("playerError").classList.add("show");
+    }, 8000);
+    iframe.onload = () => {
+      clearTimeout(errTimer);
+      document.getElementById("playerLoading").style.display = "none";
+    };
+
+    document.getElementById("playerWrap").appendChild(iframe);
+  } else if (url) {
+    // Bukan Google Drive → buka tab baru
+    document.getElementById("playerLoading").style.display = "none";
+    document.getElementById("playerError").classList.add("show");
+    document.getElementById("playerError").querySelector("span").textContent =
+      "Link ini tidak bisa diputar langsung. Klik tombol di bawah untuk menonton.";
+    document.getElementById("btnOpenDrive").href = url;
+    document.getElementById("btnOpenDrive").textContent = "▶ Buka Link Film";
+  } else {
+    document.getElementById("playerLoading").style.display = "none";
+    document.getElementById("playerError").classList.add("show");
+  }
+
+  document.getElementById("playerBackdrop").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closePlayer() {
+  document.getElementById("playerBackdrop").classList.remove("open");
+  document.body.style.overflow = "";
+  // Hentikan video dengan hapus iframe
+  const iframe = document.getElementById("playerIframe");
+  if (iframe) iframe.remove();
+}
+
+function goFullscreen() {
+  const wrap = document.getElementById("playerWrap");
+  const iframe = document.getElementById("playerIframe");
+  const el = iframe || wrap;
+  if (el.requestFullscreen)       el.requestFullscreen();
+  else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  else if (el.mozRequestFullScreen)    el.mozRequestFullScreen();
+}
+
+// Tutup player dengan tombol Escape
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closePlayer();
+});
 </script>
 </body>
 </html>
