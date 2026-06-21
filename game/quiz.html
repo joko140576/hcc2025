@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Movie Quiz Night — Kuis Film</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root{
+    --bg:#0B0B0F;
+    --bg-soft:#15151c;
+    --card:#1b1b24;
+    --gold:#E8B84B;
+    --gold-dim:#a8843a;
+    --velvet:#8B1E2F;
+    --velvet-bright:#c4324a;
+    --projector:#4A9B6E;
+    --projector-bright:#62c98c;
+    --cream:#F4EFE3;
+    --ink:#0B0B0F;
+    --muted:#8b8a96;
+    --line:rgba(232,184,75,0.18);
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  body{
+    background:
+      radial-gradient(circle at 50% 0%, rgba(232,184,75,0.07), transparent 60%),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 3px),
+      var(--bg);
+    color:var(--cream);
+    font-family:'Inter', sans-serif;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+
+  .stage{
+    width:100%;
+    max-width:640px;
+  }
+
+  /* ===== Marquee header ===== */
+  .marquee{
+    position:relative;
+    text-align:center;
+    padding:22px 16px 26px;
+    margin-bottom:22px;
+    border:2px solid var(--gold);
+    border-radius:10px;
+    background:linear-gradient(180deg, #1a1a22, #100f14);
+    box-shadow:0 0 0 1px rgba(0,0,0,0.4), 0 14px 40px -12px rgba(0,0,0,0.7);
+    overflow:hidden;
+  }
+  .marquee::before{
+    content:"";
+    position:absolute;
+    inset:6px;
+    border:1px dashed rgba(232,184,75,0.35);
+    border-radius:6px;
+    pointer-events:none;
+  }
+  .bulbs{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+  }
+  .bulb{
+    position:absolute;
+    width:6px; height:6px;
+    border-radius:50%;
+    background:var(--gold);
+    box-shadow:0 0 6px 2px rgba(232,184,75,0.7);
+    animation:twinkle 1.6s infinite ease-in-out;
+  }
+  @keyframes twinkle{
+    0%,100%{opacity:.35;}
+    50%{opacity:1;}
+  }
+  .eyebrow{
+    font-family:'Bebas Neue', sans-serif;
+    letter-spacing:.35em;
+    font-size:12px;
+    color:var(--gold);
+    margin-bottom:6px;
+  }
+  .title{
+    font-family:'Anton', sans-serif;
+    font-size:clamp(34px,8vw,48px);
+    letter-spacing:.02em;
+    line-height:1;
+    color:var(--cream);
+    text-shadow:0 0 18px rgba(232,184,75,0.25);
+  }
+  .title span{ color:var(--gold); }
+  .subtitle{
+    margin-top:8px;
+    font-size:13px;
+    color:var(--muted);
+    font-weight:500;
+  }
+
+  /* ===== Reel timer ===== */
+  .timer-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    margin-bottom:20px;
+  }
+  .reel{
+    position:relative;
+    width:64px; height:64px;
+  }
+  .reel svg{ width:100%; height:100%; transform:rotate(-90deg); }
+  .reel-track{ fill:none; stroke:rgba(232,184,75,0.15); stroke-width:6; }
+  .reel-progress{
+    fill:none; stroke:var(--gold); stroke-width:6; stroke-linecap:round;
+    transition:stroke-dashoffset 1s linear, stroke .3s ease;
+  }
+  .reel-time{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Bebas Neue', sans-serif;
+    font-size:15px;
+    letter-spacing:.02em;
+    color:var(--cream);
+  }
+  .timer-label{
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .timer-label b{ display:block; color:var(--cream); font-size:13px; letter-spacing:.05em; margin-top:2px;}
+
+  /* ===== Progress dots ===== */
+  .progress{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    margin-bottom:22px;
+  }
+  .dot{
+    width:8px; height:8px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.15);
+    transition:all .3s ease;
+  }
+  .dot.active{ background:var(--gold); box-shadow:0 0 8px rgba(232,184,75,0.6); width:22px; border-radius:5px;}
+  .dot.done{ background:var(--projector); }
+  .dot.wrong-dot{ background:var(--velvet-bright); }
+
+  /* ===== Question card ===== */
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:28px 24px;
+    box-shadow:0 20px 50px -20px rgba(0,0,0,0.6);
+  }
+  .q-no{
+    font-family:'Bebas Neue', sans-serif;
+    color:var(--gold-dim);
+    font-size:13px;
+    letter-spacing:.15em;
+    margin-bottom:8px;
+  }
+  .q-text{
+    font-size:19px;
+    font-weight:700;
+    line-height:1.4;
+    margin-bottom:22px;
+    color:var(--cream);
+  }
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .opt{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    text-align:left;
+    background:var(--bg-soft);
+    border:1px solid rgba(255,255,255,0.06);
+    color:var(--cream);
+    padding:14px 16px;
+    border-radius:10px;
+    font-size:15px;
+    font-family:'Inter', sans-serif;
+    font-weight:500;
+    cursor:pointer;
+    transition:transform .15s ease, border-color .15s ease, background .15s ease;
+  }
+  .opt:hover:not(:disabled){
+    border-color:var(--gold);
+    transform:translateX(2px);
+    background:#202029;
+  }
+  .opt:disabled{ cursor:default; }
+  .opt-letter{
+    flex:0 0 28px;
+    height:28px;
+    border-radius:50%;
+    background:rgba(232,184,75,0.12);
+    color:var(--gold);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Bebas Neue', sans-serif;
+    font-size:14px;
+  }
+  .opt.correct{
+    border-color:var(--projector);
+    background:rgba(74,155,110,0.15);
+  }
+  .opt.correct .opt-letter{ background:var(--projector); color:#0B0B0F; }
+  .opt.wrong{
+    border-color:var(--velvet-bright);
+    background:rgba(139,30,47,0.18);
+  }
+  .opt.wrong .opt-letter{ background:var(--velvet-bright); color:#0B0B0F; }
+
+  /* ===== Screens ===== */
+  .screen{ display:none; }
+  .screen.visible{ display:block; }
+
+  /* ===== Time's up screen ===== */
+  .timesup{
+    text-align:center;
+    padding:50px 24px;
+  }
+  .timesup-icon{
+    font-family:'Anton', sans-serif;
+    font-size:54px;
+    color:var(--velvet-bright);
+    margin-bottom:6px;
+  }
+  .timesup h2{
+    font-family:'Bebas Neue', sans-serif;
+    font-size:26px;
+    letter-spacing:.08em;
+    margin-bottom:10px;
+    color:var(--cream);
+  }
+  .timesup p{
+    color:var(--muted);
+    font-size:14px;
+    margin-bottom:26px;
+  }
+
+  /* ===== Buttons ===== */
+  .btn{
+    font-family:'Bebas Neue', sans-serif;
+    letter-spacing:.1em;
+    font-size:16px;
+    padding:14px 30px;
+    border-radius:999px;
+    border:none;
+    cursor:pointer;
+    transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+  .btn:hover{ transform:translateY(-2px); }
+  .btn:active{ transform:translateY(0); }
+  .btn-gold{
+    background:linear-gradient(180deg, var(--gold), var(--gold-dim));
+    color:#1a1206;
+    box-shadow:0 10px 24px -8px rgba(232,184,75,0.5);
+  }
+  .btn-outline{
+    background:transparent;
+    border:1px solid rgba(232,184,75,0.4);
+    color:var(--gold);
+  }
+  .btn-outline:hover{ background:rgba(232,184,75,0.08); }
+  .btn:disabled{ opacity:.4; cursor:not-allowed; transform:none; }
+  .btn-row{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+
+  /* ===== Result screen (simple) ===== */
+  .ticket-wrap{ padding:6px; }
+  .ticket{
+    position:relative;
+    background:linear-gradient(180deg,#171720,#0f0f15);
+    border:1px solid var(--line);
+    border-radius:20px;
+    overflow:hidden;
+  }
+  .result-simple{
+    padding:64px 24px;
+    text-align:center;
+  }
+  .result-emoji{
+    font-size:80px;
+    line-height:1;
+    margin-bottom:18px;
+    filter:drop-shadow(0 8px 24px rgba(0,0,0,0.4));
+  }
+  .result-score{
+    font-family:'Anton', sans-serif;
+    font-size:96px;
+    line-height:1;
+    color:var(--gold);
+  }
+  .result-pct{
+    margin-top:10px;
+    font-family:'Bebas Neue', sans-serif;
+    letter-spacing:.1em;
+    font-size:18px;
+    color:var(--muted);
+  }
+
+  .actions{
+    margin-top:24px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+  }
+  .hint{
+    font-size:12px;
+    color:var(--muted);
+    text-align:center;
+    max-width:320px;
+    line-height:1.5;
+  }
+  .saved-img-wrap{
+    margin-top:18px;
+    text-align:center;
+    display:none;
+  }
+  .saved-img-wrap.visible{ display:block; }
+  .saved-img-wrap img{
+    max-width:100%;
+    border-radius:12px;
+    border:1px solid var(--line);
+    box-shadow:0 20px 50px -20px rgba(0,0,0,0.7);
+  }
+  .saved-caption{
+    margin-top:10px;
+    font-size:12px;
+    color:var(--muted);
+  }
+
+  footer.note{
+    text-align:center;
+    margin-top:18px;
+    font-size:11px;
+    color:#5a5965;
+    letter-spacing:.04em;
+  }
+
+  @media (max-width:480px){
+    .card{ padding:22px 18px; }
+    .result-simple{ padding:48px 20px; }
+    .result-score{ font-size:64px; }
+    .result-emoji{ font-size:60px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <div class="marquee">
+    <div class="bulbs" id="bulbs"></div>
+    <div class="eyebrow">Quiz segera dimulai !</div>
+    <div class="title">QUIZ <span>MOVIES LOVERS</span></div>
+    <div class="subtitle">5 soal seputar dunia film &middot; 5 menit di kursi panas</div>
+  </div>
+
+  <!-- ===================== SCREEN: QUIZ ===================== -->
+  <div class="screen visible" id="screen-quiz">
+
+    <div class="timer-row">
+      <div class="reel">
+        <svg viewBox="0 0 64 64">
+          <circle class="reel-track" cx="32" cy="32" r="27"></circle>
+          <circle class="reel-progress" id="reelProgress" cx="32" cy="32" r="27"
+            stroke-dasharray="169.6" stroke-dashoffset="0"></circle>
+        </svg>
+        <div class="reel-time" id="reelTime">5:00</div>
+      </div>
+      <div class="timer-label">Sisa waktu<b id="timerWords">5 menit 00 detik</b></div>
+    </div>
+
+    <div class="progress" id="progressDots"></div>
+
+    <div class="card" id="quizCard">
+      <div class="q-no" id="qNo">SOAL 1 DARI 5</div>
+      <div class="q-text" id="qText">Memuat soal...</div>
+      <div class="options" id="qOptions"></div>
+    </div>
+  </div>
+
+  <!-- ===================== SCREEN: TIME'S UP ===================== -->
+  <div class="screen" id="screen-timesup">
+    <div class="card timesup">
+      <div class="timesup-icon">⏱</div>
+      <h2>WAKTU HABIS!</h2>
+      <p id="timesupDesc">5 menit sudah berlalu sebelum semua soal terjawab.</p>
+      <div class="btn-row">
+        <button class="btn btn-gold" id="btnRestart">🔄 Ulangi Kuis</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== SCREEN: RESULT ===================== -->
+  <div class="screen" id="screen-result">
+    <div class="ticket-wrap">
+      <div class="ticket" id="ticketCapture">
+        <div class="result-simple">
+          <div class="result-emoji" id="resultEmoji">🎬</div>
+          <div class="result-score" id="scoreBig">0/5</div>
+          <div class="result-pct" id="scoreSub">0%</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-gold" id="btnPrint">🖼️ Print to Image</button>
+      <p class="hint">Hasil akan disimpan sebagai gambar. Kuis tidak bisa diulang setelah selesai — simpan gambarnya lalu kirim ke WhatsApp lewat tombol share/download di galeri kamu.</p>
+    </div>
+
+    <div class="saved-img-wrap" id="savedImgWrap">
+      <img id="savedImg" alt="Hasil kuis dalam bentuk gambar">
+      <div class="saved-caption">Tekan &amp; tahan gambar di atas untuk menyimpan, lalu bagikan ke WhatsApp.</div>
+      <div class="btn-row" style="margin-top:14px;">
+        <a class="btn btn-outline" id="btnDownload" download="hasil-movie-quiz.png">⬇️ Unduh Gambar</a>
+        <a class="btn btn-gold" id="btnWhatsapp" target="_blank" rel="noopener">💬 Kirim ke WhatsApp</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="note">Movie Quiz Night &middot; dibuat untuk seru-seruan, bukan ujian sungguhan 🎬</footer>
+</div>
+
+<script>
+/* ================= DATA SOAL ================= */
+const QUESTIONS = [
+  {
+    text: "apa nama Danau angker dalam filem korea 'Whispering Water' ",
+    options: ["Salmokji", "Gyeongpo", "Seokchon", "Sanjeong"],
+    correct: 0
+  },
+  {
+    text: "Entitas jahat yang menempel pada katie pada filem Mummy ",
+    options: ["dagon", "Nasmaranian", "azazel", "Baphomet"],
+    correct: 1
+  },
+  {
+    text: "5 penari ballet yang menjadi tokoh pada filem pretty lethal dibawah ini , kecuali ",
+    options: ["bones", "princes", "Vicky ", "Zoe"],
+    correct: 2
+  },
+  {
+    text: "pada filem badlands, tokoh deck sedang berjuang di planet yang berbahaya yang dikenal dengan nama ?",
+    options: ["kripton", "Genna", "Pandora", "Arrakis"],
+    correct: 1
+  },
+  {
+    text: "Pemeran wanita  jahat pada filem pretty lethal ? ",
+    options: ["chloe", "Princes", "Devora Kasimer", "zoe"],
+    correct: 2
+  }
+];
+
+const TOTAL_TIME = 5 * 60; // 5 menit dalam detik
+const CIRC = 169.6; // 2 * PI * 27
+
+/* ================= STATE ================= */
+let current = 0;
+let answers = []; // {chosen, correct, isCorrect}
+let timeLeft = TOTAL_TIME;
+let timerInterval = null;
+let answeredLock = false;
+
+/* ================= ELEMENTS ================= */
+const screenQuiz = document.getElementById('screen-quiz');
+const screenTimesup = document.getElementById('screen-timesup');
+const screenResult = document.getElementById('screen-result');
+
+const qNo = document.getElementById('qNo');
+const qText = document.getElementById('qText');
+const qOptions = document.getElementById('qOptions');
+const progressDots = document.getElementById('progressDots');
+const reelProgress = document.getElementById('reelProgress');
+const reelTime = document.getElementById('reelTime');
+const timerWords = document.getElementById('timerWords');
+
+/* ================= INIT DECOR ================= */
+function spawnBulbs(){
+  const wrap = document.getElementById('bulbs');
+  wrap.innerHTML = '';
+  const count = 24;
+  for(let i=0;i<count;i++){
+    const b = document.createElement('div');
+    b.className = 'bulb';
+    const t = i / count;
+    const x = 2 + t * 96;
+    const onTop = i % 2 === 0;
+    b.style.left = x + '%';
+    b.style.top = onTop ? '4px' : 'calc(100% - 10px)';
+    b.style.animationDelay = (Math.random()*1.6).toFixed(2) + 's';
+    wrap.appendChild(b);
+  }
+}
+spawnBulbs();
+
+function buildDots(){
+  progressDots.innerHTML = '';
+  for(let i=0;i<QUESTIONS.length;i++){
+    const d = document.createElement('div');
+    d.className = 'dot';
+    d.id = 'dot-' + i;
+    progressDots.appendChild(d);
+  }
+}
+
+function updateDots(){
+  QUESTIONS.forEach((_, i)=>{
+    const d = document.getElementById('dot-'+i);
+    d.className = 'dot';
+    if(answers[i]){
+      d.classList.add(answers[i].isCorrect ? 'done' : 'wrong-dot');
+    } else if(i === current){
+      d.classList.add('active');
+    }
+  });
+}
+
+/* ================= TIMER ================= */
+function formatTime(s){
+  const m = Math.floor(s/60);
+  const sec = s%60;
+  return m + ':' + String(sec).padStart(2,'0');
+}
+
+function startTimer(){
+  clearInterval(timerInterval);
+  timeLeft = TOTAL_TIME;
+  updateTimerUI();
+  timerInterval = setInterval(()=>{
+    timeLeft--;
+    if(timeLeft <= 0){
+      timeLeft = 0;
+      updateTimerUI();
+      clearInterval(timerInterval);
+      onTimeUp();
+      return;
+    }
+    updateTimerUI();
+  }, 1000);
+}
+
+function updateTimerUI(){
+  reelTime.textContent = formatTime(timeLeft);
+  const m = Math.floor(timeLeft/60);
+  const s = timeLeft%60;
+  timerWords.textContent = m + ' menit ' + String(s).padStart(2,'0') + ' detik';
+  const frac = timeLeft / TOTAL_TIME;
+  reelProgress.style.strokeDashoffset = (CIRC * (1-frac)).toFixed(2);
+  if(frac < 0.2){
+    reelProgress.style.stroke = 'var(--velvet-bright)';
+  } else if(frac < 0.5){
+    reelProgress.style.stroke = 'var(--gold)';
+  } else {
+    reelProgress.style.stroke = 'var(--gold)';
+  }
+}
+
+function onTimeUp(){
+  showScreen('timesup');
+}
+
+/* ================= QUIZ LOGIC ================= */
+function renderQuestion(){
+  answeredLock = false;
+  const q = QUESTIONS[current];
+  qNo.textContent = 'SOAL ' + (current+1) + ' DARI ' + QUESTIONS.length;
+  qText.textContent = q.text;
+  qOptions.innerHTML = '';
+  const letters = ['A','B','C','D'];
+
+  q.options.forEach((opt, idx)=>{
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = '<span class="opt-letter">'+letters[idx]+'</span><span>'+opt+'</span>';
+    btn.addEventListener('click', ()=> selectAnswer(idx, btn));
+    qOptions.appendChild(btn);
+  });
+
+  updateDots();
+}
+
+function selectAnswer(idx, btnEl){
+  if(answeredLock) return;
+  answeredLock = true;
+
+  const q = QUESTIONS[current];
+  const isCorrect = idx === q.correct;
+  answers[current] = { chosen: idx, correctIdx: q.correct, isCorrect };
+
+  const allBtns = qOptions.querySelectorAll('.opt');
+  allBtns.forEach((b, i)=>{
+    b.disabled = true;
+    if(i === q.correct) b.classList.add('correct');
+    if(i === idx && !isCorrect) b.classList.add('wrong');
+  });
+
+  updateDots();
+
+  setTimeout(()=>{
+    if(current < QUESTIONS.length - 1){
+      current++;
+      renderQuestion();
+    } else {
+      finishQuiz();
+    }
+  }, 700);
+}
+
+function finishQuiz(){
+  clearInterval(timerInterval);
+  buildResult();
+  showScreen('result');
+}
+
+/* ================= RESULT ================= */
+function buildResult(){
+  const correctCount = answers.filter(a=>a && a.isCorrect).length;
+  const total = QUESTIONS.length;
+  const pct = Math.round((correctCount/total)*100);
+
+  document.getElementById('scoreBig').textContent = correctCount + '/' + total;
+  document.getElementById('scoreSub').textContent = pct + '%';
+  document.getElementById('resultEmoji').textContent = pct >= 80 ? '😄' : '😢';
+}
+
+/* ================= SCREEN SWITCH ================= */
+function showScreen(name){
+  screenQuiz.classList.remove('visible');
+  screenTimesup.classList.remove('visible');
+  screenResult.classList.remove('visible');
+  document.getElementById('savedImgWrap').classList.remove('visible');
+
+  if(name === 'quiz') screenQuiz.classList.add('visible');
+  if(name === 'timesup') screenTimesup.classList.add('visible');
+  if(name === 'result') screenResult.classList.add('visible');
+}
+
+/* ================= RESTART ================= */
+function resetQuiz(){
+  current = 0;
+  answers = [];
+  answeredLock = false;
+  buildDots();
+  renderQuestion();
+  showScreen('quiz');
+  startTimer();
+}
+
+document.getElementById('btnRestart').addEventListener('click', resetQuiz);
+
+/* ================= PRINT TO IMAGE ================= */
+document.getElementById('btnPrint').addEventListener('click', async ()=>{
+  const btn = document.getElementById('btnPrint');
+  const originalText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = '⏳ Membuat gambar...';
+
+  try{
+    const target = document.getElementById('ticketCapture');
+    const canvas = await html2canvas(target, {
+      backgroundColor: '#0f0f15',
+      scale: 2,
+      useCORS: true
+    });
+    const dataUrl = canvas.toDataURL('image/png');
+
+    const img = document.getElementById('savedImg');
+    img.src = dataUrl;
+
+    const downloadBtn = document.getElementById('btnDownload');
+    downloadBtn.href = dataUrl;
+
+    // WhatsApp share: WA tidak bisa terima file langsung lewat URL scheme,
+    // jadi kita siapkan link wa.me dengan teks + instruksi lampirkan gambar yang sudah diunduh.
+    const correctCount = answers.filter(a=>a && a.isCorrect).length;
+    const waText = encodeURIComponent(
+      'Hasil Movie Quiz Night saya: ' + correctCount + '/' + QUESTIONS.length + ' benar! 🎬 Coba juga yuk!'
+    );
+    document.getElementById('btnWhatsapp').href = 'https://wa.me/?text=' + waText;
+
+    document.getElementById('savedImgWrap').classList.add('visible');
+    document.getElementById('btnPrint').style.display = 'none';
+
+    document.getElementById('savedImgWrap').scrollIntoView({behavior:'smooth', block:'center'});
+  } catch(err){
+    alert('Gagal membuat gambar. Coba lagi ya.');
+    console.error(err);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = originalText;
+  }
+});
+
+/* ================= START ================= */
+buildDots();
+renderQuestion();
+startTimer();
+</script>
+
+</body>
+</html>
