@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Tembak Sasaran - Kuis Direksi</title>
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg,#0f1c2e,#1a2f4a 60%,#0a1420);
+    color:#fff;
+    min-height:100vh;
+    display:flex; flex-direction:column; align-items:center;
+    padding:20px;
+    cursor:none;
+    overflow-x:hidden;
+  }
+  #hud {
+    width:100%; max-width:900px;
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:10px;
+  }
+  #hud div { background:rgba(255,255,255,0.08); padding:8px 16px; border-radius:8px; font-weight:bold; }
+  #score { color:#ffd54a; }
+  #round { color:#7fd3ff; }
+  #question {
+    width:100%; max-width:900px;
+    background:rgba(255,255,255,0.07);
+    border:2px solid #2e4a6e;
+    border-radius:14px;
+    padding:16px 22px;
+    margin-bottom:18px;
+    font-size:1.25em;
+    text-align:center;
+    box-shadow:0 0 20px rgba(0,150,255,0.15);
+  }
+  #gallery {
+    position:relative;
+    width:100%; max-width:900px;
+    height:380px;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(255,255,255,0.05), transparent 60%),
+      repeating-linear-gradient(90deg, #14233a, #14233a 60px, #16273f 60px, #16273f 120px);
+    border-radius:16px;
+    border:2px solid #25405f;
+    overflow:hidden;
+  }
+  .target {
+    position:absolute;
+    bottom:40px;
+    width:200px;
+    height:260px;
+    border-radius:12px;
+    border:4px solid #4a6b8a;
+    overflow:hidden;
+    transition: transform 0.15s, box-shadow 0.15s, filter 0.4s;
+    box-shadow:0 8px 20px rgba(0,0,0,0.5);
+  }
+  .target img { width:100%; height:100%; object-fit:cover; display:block; background:#223; }
+  .target:hover { transform: translateY(-6px); box-shadow:0 0 25px rgba(255,80,80,0.5); }
+  .target.hit-correct { filter: brightness(1.3) saturate(1.4); border-color:#3ddc84; box-shadow:0 0 40px #3ddc84; }
+  .target.hit-wrong { filter: grayscale(0.6) brightness(0.7); border-color:#ff5050; box-shadow:0 0 40px #ff5050; }
+  .target .label {
+    position:absolute; bottom:0; left:0; right:0;
+    background:rgba(0,0,0,0.6);
+    text-align:center; padding:4px; font-size:0.85em;
+  }
+  .t0 { left:5%; }
+  .t1 { left:37.5%; }
+  .t2 { left:70%; }
+
+  #crosshair {
+    position:fixed;
+    width:0; height:0;
+    pointer-events:none;
+    z-index:999;
+    transform: translate(-50%,-50%);
+  }
+  #crosshair svg { display:block; filter:drop-shadow(0 0 4px rgba(0,0,0,0.6)); }
+
+  #gun {
+    position:absolute;
+    bottom:0;
+    width:140px;
+    height:90px;
+    pointer-events:none;
+    transition: left 0.05s linear;
+    z-index:5;
+  }
+  #gun svg { width:100%; height:100%; }
+
+  #feedback {
+    position:fixed; top:40%; left:50%; transform:translate(-50%,-50%) scale(0.5);
+    font-size:3em; font-weight:900;
+    opacity:0; pointer-events:none; z-index:1000;
+    text-shadow:0 0 20px #000;
+    transition: all 0.25s ease-out;
+  }
+  #feedback.show { opacity:1; transform:translate(-50%,-50%) scale(1); }
+  .ok { color:#3ddc84; }
+  .bad { color:#ff5050; }
+
+  #overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,0.85);
+    display:flex; align-items:center; justify-content:center; z-index:2000;
+    flex-direction:column; text-align:center; padding:20px;
+  }
+  #overlay h1 { font-size:2.2em; margin-bottom:10px; color:#ffd54a; }
+  #overlay p { font-size:1.1em; margin-bottom:20px; color:#cde; }
+  #startBtn, #restartBtn {
+    background:linear-gradient(135deg,#ffd54a,#ff9f43);
+    color:#222; border:none; padding:14px 34px;
+    font-size:1.1em; font-weight:bold; border-radius:30px;
+    cursor:pointer; box-shadow:0 6px 16px rgba(255,180,0,0.4);
+  }
+  #startBtn:hover, #restartBtn:hover { transform:scale(1.05); }
+  #finalStats { margin:14px 0; font-size:1.3em; }
+  .hidden { display:none !important; }
+</style>
+</head>
+<body>
+
+<div id="overlay">
+  <h1>🎯 Tembak Sasaran: Tembak Gambar !</h1>
+  <p>Gerakkan mouse untuk mengarahkan pistol, lalu klik foto yang benar sesuai pertanyaan.<br>
+  Jawaban benar = +100 poin. Ada 5 ronde. Selamat bermain!</p>
+  <button id="startBtn">Mulai Game</button>
+</div>
+
+<div id="hud" style="display:none;">
+  <div id="round">Ronde: 1 / 5</div>
+  <div id="question-label" style="opacity:0.7;">🔫 Arahkan & Klik!</div>
+  <div id="score">Skor: 0</div>
+</div>
+
+<div id="question" style="display:none;"></div>
+
+<div id="gallery" style="display:none;">
+  <div class="target t0" id="target0"><img src=""><div class="label"></div></div>
+  <div class="target t1" id="target1"><img src=""><div class="label"></div></div>
+  <div class="target t2" id="target2"><img src=""><div class="label"></div></div>
+  <div id="gun">
+    <svg viewBox="0 0 140 90">
+      <rect x="20" y="55" width="80" height="14" rx="4" fill="#3a3a3a"/>
+      <rect x="85" y="40" width="14" height="35" rx="3" fill="#222"/>
+      <rect x="0" y="58" width="25" height="8" rx="3" fill="#5a3a1a"/>
+      <rect x="90" y="30" width="40" height="10" rx="2" fill="#444"/>
+      <circle cx="35" cy="62" r="5" fill="#111"/>
+    </svg>
+  </div>
+</div>
+
+<div id="feedback"></div>
+
+<div id="finalOverlay" class="hidden" style="position:fixed; inset:0; background:rgba(0,0,0,0.9); display:flex; align-items:center; justify-content:center; flex-direction:column; z-index:2000;">
+  <h1 style="font-size:2.4em; color:#ffd54a; margin-bottom:10px;">🏆 Game Selesai!</h1>
+  <div id="finalStats"></div>
+  <button id="restartBtn">Main Lagi</button>
+</div>
+
+<div id="crosshair">
+  <svg width="40" height="40" viewBox="0 0 40 40">
+    <circle cx="20" cy="20" r="14" fill="none" stroke="#ff3b3b" stroke-width="2"/>
+    <line x1="20" y1="0" x2="20" y2="10" stroke="#ff3b3b" stroke-width="2"/>
+    <line x1="20" y1="30" x2="20" y2="40" stroke="#ff3b3b" stroke-width="2"/>
+    <line x1="0" y1="20" x2="10" y2="20" stroke="#ff3b3b" stroke-width="2"/>
+    <line x1="30" y1="20" x2="40" y2="20" stroke="#ff3b3b" stroke-width="2"/>
+    <circle cx="20" cy="20" r="2" fill="#ff3b3b"/>
+  </svg>
+</div>
+
+<script>
+/* =====================================================================
+   DAFTAR GAMBAR: img1.jpg s/d img15.jpg
+   - Taruh 15 file gambar di FOLDER YANG SAMA dengan file HTML ini.
+   - Penamaan harus persis: img1.jpg, img2.jpg, ... img15.jpg
+     (kalau formatnya .png/.jpeg, tinggal ganti ekstensi di bawah)
+   - Tiap ronde memakai 3 gambar berurutan:
+       Ronde 1 -> img1, img2, img3
+       Ronde 2 -> img4, img5, img6
+       Ronde 3 -> img7, img8, img9
+       Ronde 4 -> img10, img11, img12
+       Ronde 5 -> img13, img14, img15
+   - "correct" = index gambar yang benar (0 = gambar pertama di ronde itu,
+     1 = gambar kedua, 2 = gambar ketiga)
+===================================================================== */
+const rounds = [
+  {
+    question: "Siapa Direktur Finance and Risk Management?",
+    correct: 2, // contoh: jawaban benar = gambar ke-3 (img3.jpg)
+    people: [
+      { name: "M.A.M Srihono",          img: "img1.png" },
+      { name: "Moh Adil",           img: "img3.png" },
+      { name: "Gustommy Bisono ",    img: "img2.png" }
+    ]
+  },
+  {
+    question: "Siapa General Manager HCC saat ini ?",
+    correct: 0,
+    people: [
+      { name: "Iwan Misriyono",          img: "img4.png" },
+      { name: "Iswanto ",          img: "img5.png" },
+      { name: "Riskq Agustawanto",            img: "img6.png" }
+    ]
+  },
+  {
+    question: "Siapa General Manager marketing ?",
+    correct: 1,
+    people: [
+      { name: "imam Widodo",            img: "img8.png" },
+      { name: "Iwan Setiana",          img: "img7.png" },
+      { name: "Lury Rizaldy",        img: "img9.png" }
+    ]
+  },
+  {
+    question: "Siapa komisaris PT SSI  ?",
+    correct: 2,
+    people: [
+      { name: "Ambar kuspardianto",        img: "img12.png" },
+      { name: "Agus bahar",       img: "img11.png" },
+      { name: "ariwiati",         img: "img10.png" }
+    ]
+  },
+  {
+    question: "Siapa Direktur PT TELKOM saat ini ?",
+    correct: 0,
+    people: [
+      { name: "Dian Siswarini",          img: "img13.jpeg" },
+      { name: "Ririek Ardiansyah",          img: "img14.jpg" },
+      { name: "Edy Witjara",              img: "img15.jpg" }
+    ]
+  }
+];
+
+let currentRound = 0;
+let score = 0;
+let canShoot = true;
+
+const overlay = document.getElementById('overlay');
+const hud = document.getElementById('hud');
+const questionEl = document.getElementById('question');
+const galleryEl = document.getElementById('gallery');
+const roundEl = document.getElementById('round');
+const scoreEl = document.getElementById('score');
+const gun = document.getElementById('gun');
+const crosshair = document.getElementById('crosshair');
+const feedback = document.getElementById('feedback');
+const finalOverlay = document.getElementById('finalOverlay');
+const finalStats = document.getElementById('finalStats');
+
+function loadRound(){
+  const r = rounds[currentRound];
+  questionEl.textContent = `❓ ${r.question}`;
+  roundEl.textContent = `Ronde: ${currentRound+1} / ${rounds.length}`;
+  r.people.forEach((p, i) => {
+    const t = document.getElementById('target'+i);
+    t.querySelector('img').src = p.img;
+    t.querySelector('.label').textContent = p.name;
+    t.classList.remove('hit-correct','hit-wrong');
+    t.dataset.index = i;
+  });
+  canShoot = true;
+}
+
+function showFeedback(text, ok){
+  feedback.textContent = text;
+  feedback.className = ok ? 'ok' : 'bad';
+  feedback.classList.add('show');
+  setTimeout(()=> feedback.classList.remove('show'), 700);
+}
+
+document.addEventListener('mousemove', (e) => {
+  crosshair.style.left = e.clientX + 'px';
+  crosshair.style.top = e.clientY + 'px';
+
+  if (galleryEl.style.display !== 'none') {
+    const galRect = galleryEl.getBoundingClientRect();
+    let relX = e.clientX - galRect.left;
+    relX = Math.max(0, Math.min(galRect.width - 140, relX - 70));
+    gun.style.left = relX + 'px';
+  }
+});
+
+document.querySelectorAll('.target').forEach(t => {
+  t.addEventListener('click', () => {
+    if (!canShoot) return;
+    canShoot = false;
+    const idx = parseInt(t.dataset.index);
+    const r = rounds[currentRound];
+    if (idx === r.correct) {
+      t.classList.add('hit-correct');
+      score += 100;
+      scoreEl.textContent = `Skor: ${score}`;
+      showFeedback('+100 TEPAT! 🎯', true);
+    } else {
+      t.classList.add('hit-wrong');
+      showFeedback('MELESET ❌', false);
+    }
+    setTimeout(() => {
+      currentRound++;
+      if (currentRound < rounds.length) {
+        loadRound();
+      } else {
+        endGame();
+      }
+    }, 1000);
+  });
+});
+
+function endGame(){
+  hud.style.display = 'none';
+  questionEl.style.display = 'none';
+  galleryEl.style.display = 'none';
+  const max = rounds.length * 100;
+  finalStats.innerHTML = `Skor Akhir: <span style="color:#ffd54a">${score} / ${max}</span><br><span style="font-size:0.7em; opacity:0.8;">${score===max ? 'Sempurna! 🔥' : score>=max*0.6 ? 'Bagus sekali!' : 'Coba lagi yuk!'}</span>`;
+  finalOverlay.classList.remove('hidden');
+}
+
+document.getElementById('startBtn').addEventListener('click', () => {
+  overlay.style.display = 'none';
+  hud.style.display = 'flex';
+  questionEl.style.display = 'block';
+  galleryEl.style.display = 'block';
+  currentRound = 0;
+  score = 0;
+  scoreEl.textContent = 'Skor: 0';
+  loadRound();
+});
+
+document.getElementById('restartBtn').addEventListener('click', () => {
+  finalOverlay.classList.add('hidden');
+  overlay.style.display = 'flex';
+  hud.style.display = 'none';
+  questionEl.style.display = 'none';
+  galleryEl.style.display = 'none';
+});
+</script>
+</body>
+</html>
