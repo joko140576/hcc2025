@@ -1,1270 +1,279 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <title>Human Capital Center</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<title>Human Capital Center</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--cy:#22d3ee;--vi:#8b5cf6;--pk:#f472b6;--tx:#e6ecff;--tx2:#a5b4d4;--tx3:#6b7ba3;--bd:rgba(120,150,255,.16);--glass:rgba(14,20,48,.55)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Space Grotesk',sans-serif;color:var(--tx);overflow-x:hidden;min-height:100vh;
+background:linear-gradient(135deg,#050816 0%,#0b1033 30%,#1a0f3d 55%,#07263a 80%,#050816 100%);background-size:300% 300%;background-attachment:fixed;animation:bgShift 22s ease infinite}
+@keyframes bgShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+background-image:linear-gradient(rgba(34,211,238,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(34,211,238,.05) 1px,transparent 1px);background-size:56px 56px;
+-webkit-mask-image:radial-gradient(ellipse at 50% 30%,#000 20%,transparent 75%);mask-image:radial-gradient(ellipse at 50% 30%,#000 20%,transparent 75%)}
+#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.wrap{position:relative;z-index:1}
+#prog{position:fixed;top:0;left:0;height:3px;width:0;z-index:9999;background:linear-gradient(90deg,var(--cy),var(--vi),var(--pk));box-shadow:0 0 12px var(--cy)}
+.mono{font-family:'JetBrains Mono',monospace}
+.grad{background:linear-gradient(120deg,var(--cy),var(--vi) 60%,var(--pk));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Fraunces:ital,wght@0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+/* nav */
+.navbar{background:rgba(5,8,22,.55);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--bd);padding:12px 0;transition:.3s}
+.navbar.scrolled{background:rgba(5,8,22,.88);box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.navbar-brand{font-weight:700;font-size:.95rem;letter-spacing:.02em;display:flex;align-items:center;gap:10px;color:var(--tx)!important}
+.navbar-brand img{filter:drop-shadow(0 0 8px rgba(34,211,238,.5))}
+.nav-link{color:var(--tx2)!important;font-size:.88rem;font-weight:500;border-radius:10px;padding:7px 14px!important;transition:.25s}
+.nav-link:hover{color:var(--cy)!important;background:rgba(34,211,238,.08)}
+.dropdown-menu{background:rgba(10,14,38,.96);backdrop-filter:blur(18px);border:1px solid var(--bd);border-radius:16px;padding:8px;min-width:240px;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.dropdown-item{color:var(--tx2);border-radius:10px;padding:9px 14px;font-size:.86rem}
+.dropdown-item:hover{background:rgba(139,92,246,.18);color:#fff}
+.navbar-toggler{border:1px solid var(--bd);border-radius:10px}
+.navbar-toggler:focus{box-shadow:none}
+@media(max-width:991px){.navbar-collapse{background:rgba(10,14,38,.96);border:1px solid var(--bd);border-radius:16px;padding:14px;margin-top:12px}}
 
-    <style>
-        :root {
-            --primary: #1a4fdb;
-            --primary-light: #4b7bff;
-            --primary-pale: #eef2ff;
-            --accent: #f97316;
-            --accent-light: #fff5ee;
-            --teal: #0891b2;
-            --teal-light: #ecfeff;
-            --text: #0f172a;
-            --text-2: #334155;
-            --text-3: #64748b;
-            --text-4: #94a3b8;
-            --border: #e2e8f0;
-            --border-light: #f1f5f9;
-            --bg: #f8faff;
-            --surface: #ffffff;
-            --surface-2: #f4f6fd;
-            --shadow-sm: 0 1px 3px rgba(26,79,219,0.06), 0 1px 2px rgba(0,0,0,0.04);
-            --shadow-md: 0 4px 16px rgba(26,79,219,0.08), 0 2px 8px rgba(0,0,0,0.04);
-            --shadow-lg: 0 20px 48px rgba(26,79,219,0.12), 0 8px 20px rgba(0,0,0,0.06);
-            --shadow-xl: 0 32px 64px rgba(26,79,219,0.16), 0 12px 30px rgba(0,0,0,0.08);
-        }
+/* hero */
+.hero{min-height:100vh;display:flex;align-items:center;padding:120px 0 80px;position:relative}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;animation:orb 14s ease-in-out infinite}
+.o1{width:480px;height:480px;background:rgba(139,92,246,.35);top:-80px;left:-120px}
+.o2{width:420px;height:420px;background:rgba(34,211,238,.25);bottom:-60px;right:-80px;animation-delay:-5s}
+@keyframes orb{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
+.tag{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--bd);background:var(--glass);border-radius:100px;padding:6px 16px 6px 8px;font-size:.78rem;color:var(--cy);margin-bottom:26px}
+.tag b{background:linear-gradient(135deg,var(--cy),var(--vi));color:#050816;border-radius:100px;padding:2px 10px;font-size:.68rem}
+.dot{width:8px;height:8px;border-radius:50%;background:#34d399;box-shadow:0 0 10px #34d399;animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.3}}
+.hero h1{font-size:clamp(2.4rem,5.6vw,4.4rem);font-weight:700;line-height:1.05;letter-spacing:-.035em;margin-bottom:22px}
+.hero h1 .cursor{display:inline-block;width:.08em;height:.9em;background:var(--cy);margin-left:6px;vertical-align:-.08em;animation:blink 1s steps(1) infinite;box-shadow:0 0 12px var(--cy)}
+@keyframes blink{50%{opacity:0}}
+.hero p.lead{color:var(--tx2);line-height:1.8;max-width:480px;font-size:1.02rem}
+.btn-main{display:inline-flex;align-items:center;gap:10px;padding:14px 30px;border-radius:14px;font-weight:700;font-size:.92rem;color:#050816;text-decoration:none;background:linear-gradient(135deg,var(--cy),var(--vi));box-shadow:0 0 30px rgba(34,211,238,.35);transition:.3s}
+.btn-main:hover{transform:translateY(-3px);box-shadow:0 0 44px rgba(139,92,246,.6);color:#050816}
+.stat{display:inline-flex;align-items:center;gap:18px;margin-top:40px;padding:16px 26px;border:1px solid var(--bd);border-radius:18px;background:var(--glass);backdrop-filter:blur(12px)}
+.stat .n{font-size:2.2rem;font-weight:700;line-height:1}
+.stat .l{font-size:.72rem;color:var(--tx3);letter-spacing:.08em}
+.vis{position:relative}
+.frame{position:relative;padding:14px;border-radius:28px;background:linear-gradient(145deg,rgba(34,211,238,.35),rgba(139,92,246,.25),rgba(244,114,182,.3));animation:fl 7s ease-in-out infinite;box-shadow:0 0 70px rgba(139,92,246,.35)}
+@keyframes fl{50%{transform:translateY(-14px)}}
+.frame .in{background:#080c26;border-radius:18px;overflow:hidden;position:relative}
+.frame .in::after{content:'';position:absolute;left:0;right:0;height:60px;top:-60px;background:linear-gradient(transparent,rgba(34,211,238,.25),transparent);animation:scan 4s linear infinite}
+@keyframes scan{to{top:100%}}
+.frame img{display:block;width:100%;max-height:380px;object-fit:cover}
+.bar{display:flex;gap:6px;padding:10px 14px;border-bottom:1px solid var(--bd)}
+.bar i{width:9px;height:9px;border-radius:50%;background:#334}
+.bar i:nth-child(1){background:#f87171}.bar i:nth-child(2){background:#fbbf24}.bar i:nth-child(3){background:#34d399}
+.float{position:absolute;z-index:3;max-width:250px;padding:12px 16px;border-radius:14px;border:1px solid var(--bd);background:rgba(8,12,38,.82);backdrop-filter:blur(14px);font-size:.74rem;line-height:1.5;color:var(--tx2);box-shadow:0 14px 40px rgba(0,0,0,.45)}
+.f1{top:-26px;left:-34px;animation:fa 5s ease-in-out infinite}
+.f2{bottom:24px;right:-22px;animation:fa 6s ease-in-out infinite reverse}
+@keyframes fa{50%{transform:translate(-6px,-10px)}}
+@media(max-width:991px){.float{display:none}.frame{margin-top:36px}}
 
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
+/* section */
+.section{padding:90px 0}
+.eyebrow{color:var(--cy);font-size:.8rem;margin-bottom:12px;display:block}
+.title{font-size:clamp(1.9rem,4vw,3rem);font-weight:700;letter-spacing:-.03em;line-height:1.1}
+.sub{color:var(--tx2);max-width:540px;margin:14px auto 0}
+.search{position:relative;max-width:460px;margin:30px auto 44px}
+.search input{width:100%;background:var(--glass);border:1px solid var(--bd);border-radius:14px;padding:14px 18px 14px 46px;color:var(--tx);font-size:.92rem;outline:none;transition:.25s;backdrop-filter:blur(10px)}
+.search input:focus{border-color:var(--cy);box-shadow:0 0 0 4px rgba(34,211,238,.12),0 0 24px rgba(34,211,238,.2)}
+.search i{position:absolute;left:18px;top:50%;transform:translateY(-50%);color:var(--tx3)}
+.search input::placeholder{color:var(--tx3)}
 
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            overflow-x: hidden;
-        }
+/* cards */
+.card-h{position:relative;height:100%;padding:28px 24px;border-radius:22px;background:var(--glass);border:1px solid var(--bd);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);overflow:hidden;transition:transform .35s cubic-bezier(.2,.9,.3,1),border-color .35s,box-shadow .35s;--mx:50%;--my:50%}
+.card-h::before{content:'';position:absolute;inset:0;background:radial-gradient(260px circle at var(--mx) var(--my),rgba(34,211,238,.16),transparent 60%);opacity:0;transition:opacity .3s;pointer-events:none}
+.card-h::after{content:'';position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,var(--cy),var(--vi),transparent);opacity:0;transition:.3s}
+.card-h:hover{transform:translateY(-6px);border-color:rgba(34,211,238,.45);box-shadow:0 18px 50px rgba(0,0,0,.45),0 0 34px rgba(139,92,246,.25)}
+.card-h:hover::before,.card-h:hover::after{opacity:1}
+.chip{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--cy);border:1px solid rgba(34,211,238,.3);background:rgba(34,211,238,.07);border-radius:100px;padding:3px 11px;margin-bottom:16px}
+.ic{width:54px;height:54px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:21px;color:var(--cy);margin-bottom:16px;background:linear-gradient(135deg,rgba(34,211,238,.14),rgba(139,92,246,.18));border:1px solid var(--bd);transition:.35s}
+.card-h:hover .ic{color:#050816;background:linear-gradient(135deg,var(--cy),var(--vi));box-shadow:0 0 24px rgba(34,211,238,.5);transform:rotate(-4deg) scale(1.06)}
+.card-h h5{font-size:1.02rem;font-weight:700;margin-bottom:8px;letter-spacing:-.01em}
+.card-h p{color:var(--tx2);font-size:.84rem;line-height:1.7;margin-bottom:0}
+.go{display:inline-flex;align-items:center;gap:8px;margin-top:18px;color:var(--cy);font-size:.82rem;font-weight:600;text-decoration:none;transition:.25s}
+.go:hover{color:#fff;gap:12px}
+.col-x{transition:opacity .3s}
+.empty{display:none;text-align:center;color:var(--tx3);padding:40px 0}
 
-        /* ── SCROLL PROGRESS ── */
-        #scroll-progress {
-            position: fixed;
-            top: 0; left: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--teal), var(--accent));
-            z-index: 9999;
-            transition: width 0.1s linear;
-            box-shadow: 0 0 8px rgba(26,79,219,0.4);
-        }
-
-        /* ── CANVAS ── */
-        #particle-canvas {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 0;
-            pointer-events: none;
-            opacity: 0.5;
-        }
-
-        .page-wrapper { position: relative; z-index: 1; }
-
-        /* ── NAVBAR ── */
-        .navbar {
-            background: rgba(248,250,255,0.82);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border-bottom: 1px solid rgba(26,79,219,0.07);
-            transition: all 0.4s ease;
-            padding: 14px 0;
-        }
-        .navbar.scrolled {
-            background: rgba(255,255,255,0.97);
-            box-shadow: 0 4px 24px rgba(26,79,219,0.08);
-            padding: 10px 0;
-        }
-        .navbar-brand {
-            font-family: 'Fraunces', serif;
-            font-weight: 900;
-            font-size: 1.05rem;
-            letter-spacing: -0.01em;
-            background: linear-gradient(135deg, var(--primary), var(--teal));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .nav-link {
-            color: var(--text-2) !important;
-            font-weight: 500;
-            font-size: 0.88rem;
-            transition: color 0.25s;
-            padding: 6px 14px !important;
-            border-radius: 8px;
-        }
-        .nav-link:hover {
-            color: var(--primary) !important;
-            background: var(--primary-pale);
-        }
-        .dropdown-menu {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 8px;
-            box-shadow: var(--shadow-lg);
-            min-width: 230px;
-        }
-        .dropdown-item {
-            color: var(--text-2);
-            border-radius: 10px;
-            padding: 9px 14px;
-            font-size: 0.86rem;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-        .dropdown-item:hover {
-            background: var(--primary-pale);
-            color: var(--primary);
-        }
-        .navbar-toggler {
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 6px 10px;
-        }
-        .navbar-toggler:focus { box-shadow: none; }
-
-        /* ── HERO ── */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-            padding: 120px 0 80px;
-        }
-
-        /* Decorative blobs */
-        .blob {
-            position: absolute;
-            border-radius: 50%;
-            pointer-events: none;
-            animation: blobFloat 12s ease-in-out infinite;
-        }
-        .blob-1 {
-            width: 700px; height: 700px;
-            background: radial-gradient(circle, rgba(26,79,219,0.08) 0%, transparent 65%);
-            top: -200px; left: -150px;
-            animation-delay: 0s;
-        }
-        .blob-2 {
-            width: 500px; height: 500px;
-            background: radial-gradient(circle, rgba(8,145,178,0.1) 0%, transparent 65%);
-            bottom: -100px; right: -100px;
-            animation-delay: -4s;
-        }
-        .blob-3 {
-            width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(249,115,22,0.07) 0%, transparent 65%);
-            top: 50%; right: 20%;
-            animation-delay: -8s;
-        }
-        @keyframes blobFloat {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(20px, -30px) scale(1.05); }
-            66% { transform: translate(-15px, 20px) scale(0.97); }
-        }
-
-        /* Grid texture */
-        .hero::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: 
-                linear-gradient(rgba(26,79,219,0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(26,79,219,0.04) 1px, transparent 1px);
-            background-size: 60px 60px;
-            pointer-events: none;
-        }
-
-        .hero-eyebrow {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: white;
-            border: 1px solid rgba(26,79,219,0.15);
-            border-radius: 100px;
-            padding: 6px 16px 6px 8px;
-            font-size: 0.76rem;
-            font-weight: 600;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: var(--primary);
-            margin-bottom: 28px;
-            box-shadow: var(--shadow-sm);
-        }
-        .eyebrow-pill {
-            background: linear-gradient(135deg, var(--primary), var(--teal));
-            color: white;
-            border-radius: 100px;
-            padding: 2px 10px;
-            font-size: 0.68rem;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-        }
-
-        .hero h1 {
-            font-family: 'Fraunces', serif;
-            font-size: clamp(2.4rem, 5.5vw, 4.2rem);
-            font-weight: 900;
-            line-height: 1.06;
-            letter-spacing: -0.03em;
-            color: var(--text);
-            margin-bottom: 24px;
-        }
-        .hero h1 .highlight {
-            position: relative;
-            display: inline-block;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--teal) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero h1 .highlight::after {
-            content: '';
-            position: absolute;
-            bottom: 4px; left: 0;
-            width: 100%; height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--teal));
-            border-radius: 4px;
-            opacity: 0.25;
-        }
-        .hero p {
-            color: var(--text-3);
-            font-size: 1.05rem;
-            line-height: 1.8;
-            max-width: 460px;
-        }
-
-        /* Stats */
-        .hero-stats {
-            display: flex;
-            gap: 0;
-            margin-top: 44px;
-            background: white;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            padding: 20px 28px;
-            box-shadow: var(--shadow-md);
-            max-width: 460px;
-        }
-        .stat-item {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-        .stat-item + .stat-item {
-            border-left: 1px solid var(--border);
-        }
-        .stat-number {
-            font-family: 'Fraunces', serif;
-            font-size: 2rem;
-            font-weight: 900;
-            color: var(--primary);
-            line-height: 1;
-        }
-        .stat-label {
-            font-size: 0.71rem;
-            color: var(--text-4);
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            margin-top: 4px;
-            font-weight: 600;
-        }
-
-        /* CTA buttons */
-        .btn-primary-hcc {
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            border: none;
-            color: #fff;
-            border-radius: 14px;
-            padding: 14px 32px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            letter-spacing: 0.01em;
-            transition: all 0.35s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 8px 24px rgba(26,79,219,0.3);
-            position: relative;
-            overflow: hidden;
-            text-decoration: none;
-        }
-        .btn-primary-hcc::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .btn-primary-hcc:hover::before { opacity: 1; }
-        .btn-primary-hcc:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(26,79,219,0.4);
-            color: white;
-        }
-
-        .btn-ghost-hcc {
-            background: white;
-            border: 1.5px solid var(--border);
-            color: var(--text-2);
-            border-radius: 14px;
-            padding: 13px 28px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-        }
-        .btn-ghost-hcc:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-            background: var(--primary-pale);
-            transform: translateY(-2px);
-        }
-
-        /* Hero image */
-        .hero-visual {
-            position: relative;
-        }
-        .hero-img-card {
-            background: white;
-            border-radius: 32px;
-            padding: 16px;
-            box-shadow: var(--shadow-xl);
-            border: 1px solid var(--border);
-            position: relative;
-            z-index: 2;
-            animation: heroFloat 7s ease-in-out infinite;
-        }
-        @keyframes heroFloat {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-14px) rotate(0.5deg); }
-        }
-        .hero-img-card img {
-            border-radius: 22px;
-            max-width: 100%;
-            display: block;
-        }
-
-        /* Floating badge */
-        .hero-badge {
-            position: absolute;
-            background: white;
-            border-radius: 16px;
-            padding: 12px 18px;
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: var(--text-2);
-            z-index: 3;
-            white-space: nowrap;
-        }
-        .badge-icon {
-            width: 34px; height: 34px;
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 16px;
-            flex-shrink: 0;
-        }
-        .hero-badge-1 {
-            top: -20px; left: -30px;
-            animation: badgeFloat1 5s ease-in-out infinite;
-        }
-        .hero-badge-2 {
-            bottom: 20px; right: -20px;
-            animation: badgeFloat2 6s ease-in-out infinite;
-        }
-        @keyframes badgeFloat1 {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(-6px, -10px); }
-        }
-        @keyframes badgeFloat2 {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(8px, -8px); }
-        }
-
-        /* Deco ring */
-        .deco-ring {
-            position: absolute;
-            border-radius: 50%;
-            border: 2px dashed rgba(26,79,219,0.12);
-            pointer-events: none;
-        }
-        .ring-1 {
-            width: 420px; height: 420px;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            animation: ringRotate 30s linear infinite;
-        }
-        .ring-2 {
-            width: 320px; height: 320px;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            border-color: rgba(8,145,178,0.1);
-            animation: ringRotate 20s linear infinite reverse;
-        }
-        @keyframes ringRotate { to { transform: translate(-50%, -50%) rotate(360deg); } }
-
-        /* ── SECTION ── */
-        .section { padding: 100px 0; }
-
-        .section-label {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.73rem;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--primary);
-            margin-bottom: 14px;
-        }
-        .section-label::before {
-            content: '';
-            width: 24px; height: 2px;
-            background: var(--primary);
-            border-radius: 2px;
-        }
-        .section-title {
-            font-family: 'Fraunces', serif;
-            font-size: clamp(1.9rem, 4vw, 3rem);
-            font-weight: 900;
-            color: var(--text);
-            letter-spacing: -0.03em;
-            line-height: 1.1;
-        }
-        .section-title .accent-text {
-            background: linear-gradient(135deg, var(--primary), var(--teal));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .section-desc {
-            color: var(--text-3);
-            font-size: 1rem;
-            line-height: 1.7;
-            max-width: 520px;
-        }
-
-        /* ── CARDS ── */
-        .hcc-card {
-            background: white;
-            border-radius: 24px;
-            padding: 32px 26px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow-sm);
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            height: 100%;
-            position: relative;
-            overflow: hidden;
-        }
-        .hcc-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--teal));
-            opacity: 0;
-            transition: opacity 0.35s;
-        }
-        .hcc-card:hover::before { opacity: 1; }
-
-        /* Subtle corner glow */
-        .hcc-card::after {
-            content: '';
-            position: absolute;
-            top: -50%; right: -50%;
-            width: 200%; height: 200%;
-            background: radial-gradient(circle at top right, rgba(26,79,219,0.04) 0%, transparent 50%);
-            opacity: 0;
-            transition: opacity 0.4s;
-            pointer-events: none;
-        }
-        .hcc-card:hover::after { opacity: 1; }
-
-        .hcc-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-lg);
-            border-color: rgba(26,79,219,0.15);
-        }
-
-        .card-icon-wrap {
-            width: 60px; height: 60px;
-            border-radius: 16px;
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 20px;
-            background: var(--primary-pale);
-            transition: all 0.35s;
-        }
-        .hcc-card:hover .card-icon-wrap {
-            background: linear-gradient(135deg, var(--primary), var(--teal));
-            transform: scale(1.08) rotate(-3deg);
-        }
-        .hcc-card i.card-i {
-            font-size: 24px;
-            color: var(--primary);
-            transition: color 0.35s;
-        }
-        .hcc-card:hover i.card-i { color: white; }
-
-        .hcc-card h5 {
-            font-family: 'Fraunces', serif;
-            font-size: 1rem;
-            font-weight: 800;
-            color: var(--text);
-            margin-bottom: 10px;
-            letter-spacing: -0.01em;
-        }
-        .hcc-card p {
-            color: var(--text-3);
-            font-size: 0.84rem;
-            line-height: 1.72;
-        }
-
-        .btn-card {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            color: var(--primary);
-            background: var(--primary-pale);
-            border: 1px solid rgba(26,79,219,0.12);
-            border-radius: 100px;
-            padding: 7px 18px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            transition: all 0.28s;
-            text-decoration: none;
-            margin-top: 18px;
-            letter-spacing: 0.01em;
-        }
-        .btn-card:hover {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            transform: translateX(3px);
-            box-shadow: 0 4px 14px rgba(26,79,219,0.25);
-        }
-        .btn-card i { font-size: 10px; transition: transform 0.28s; }
-        .btn-card:hover i { transform: translateX(3px); }
-
-        /* Category dividers */
-        .row-block { margin-bottom: 24px; }
-
-        /* ── DIVIDER SECTION ── */
-        .platform-divider {
-            background: linear-gradient(135deg, var(--primary), #2563eb 40%, var(--teal));
-            border-radius: 28px;
-            padding: 56px 48px;
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 60px;
-        }
-        .platform-divider::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px);
-            background-size: 24px 24px;
-        }
-        .platform-divider::after {
-            content: '';
-            position: absolute;
-            top: -60%; right: -10%;
-            width: 400px; height: 400px;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 65%);
-            border-radius: 50%;
-        }
-        .platform-divider h3 {
-            font-family: 'Fraunces', serif;
-            font-weight: 900;
-            font-size: 1.9rem;
-            color: white;
-            letter-spacing: -0.02em;
-            margin-bottom: 10px;
-        }
-        .platform-divider p { color: rgba(255,255,255,0.75); font-size: 0.95rem; }
-
-        /* ── FOOTER ── */
-        footer {
-            background: white;
-            border-top: 1px solid var(--border);
-            padding: 32px;
-            text-align: center;
-            font-size: 0.82rem;
-            color: var(--text-4);
-        }
-        footer .brand-text {
-            font-family: 'Fraunces', serif;
-            font-weight: 900;
-            font-size: 0.85rem;
-            background: linear-gradient(135deg, var(--primary), var(--teal));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* ── FAB ── */
-        .fab-top {
-            position: fixed;
-            bottom: 30px; right: 30px;
-            width: 48px; height: 48px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, var(--primary), var(--teal));
-            color: white;
-            border: none;
-            font-size: 16px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-            z-index: 999;
-            opacity: 0;
-            transform: translateY(12px);
-            transition: all 0.32s ease;
-            box-shadow: 0 8px 24px rgba(26,79,219,0.35);
-        }
-        .fab-top.visible { opacity: 1; transform: translateY(0); }
-        .fab-top:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 12px 28px rgba(26,79,219,0.45); }
-
-        /* ── MOBILE ── */
-        @media (max-width: 991px) {
-            .hero { padding-top: 100px; padding-bottom: 60px; }
-            .hero h1 { font-size: clamp(2rem, 7vw, 2.8rem); }
-            .hero-img-card { margin-top: 40px; }
-            .hero-badge { display: none; }
-            .deco-ring { display: none; }
-            .hero-stats { max-width: 100%; flex-wrap: wrap; }
-            .stat-item { flex: 0 0 33.333%; }
-            .stat-item + .stat-item { border-left: none; }
-        }
-        @media (max-width: 767px) {
-            .section { padding: 70px 0; }
-            .platform-divider { padding: 36px 26px; }
-            .platform-divider h3 { font-size: 1.5rem; }
-        }
-        @media (max-width: 991px) {
-            .navbar-collapse {
-                background: white;
-                border-radius: 16px;
-                padding: 16px;
-                margin-top: 12px;
-                border: 1px solid var(--border);
-                box-shadow: var(--shadow-lg);
-            }
-        }
-
-        /* Count up */
-        .count-up { display: inline-block; }
-
-        /* Subtle section bg */
-        .section-alt { background: var(--surface-2); }
-
-        /* Chip tag on card */
-        .card-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 0.69rem;
-            font-weight: 700;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: var(--teal);
-            background: var(--teal-light);
-            border-radius: 100px;
-            padding: 3px 10px;
-            margin-bottom: 12px;
-        }
-
-        /* Loading bar animation */
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-    </style>
+footer{border-top:1px solid var(--bd);padding:30px;text-align:center;color:var(--tx3);font-size:.82rem;background:rgba(5,8,22,.6)}
+.fab{position:fixed;bottom:28px;right:28px;width:48px;height:48px;border-radius:14px;border:1px solid var(--bd);background:rgba(10,14,38,.9);color:var(--cy);z-index:999;opacity:0;transform:translateY(12px);transition:.3s;box-shadow:0 0 24px rgba(34,211,238,.3);cursor:pointer}
+.fab.v{opacity:1;transform:none}
+.fab:hover{background:linear-gradient(135deg,var(--cy),var(--vi));color:#050816}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--cy);outline-offset:3px}
+.rv{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
 </head>
-
 <body>
-<div id="scroll-progress"></div>
-<canvas id="particle-canvas"></canvas>
+<div id="prog"></div>
+<canvas id="fx"></canvas>
 
-<div class="page-wrapper">
-
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg fixed-top" id="mainNav">
-    <div class="container">
-        <a class="navbar-brand" href="#">
-                <img src="logo.png" width="42" height="32" alt="Logo">
-            HUMAN CAPITAL & COMPLIANCE
-        </a>
-
-        <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Toggle navigation">
-            <i class="fa-solid fa-bars" style="color:var(--text-3);font-size:14px;"></i>
-        </button>
-
-        <div class="collapse navbar-collapse justify-content-end" id="menu">
-            <ul class="navbar-nav align-items-center gap-1">
-                <li class="nav-item">
-                    <a class="nav-link" href="#program">Digitalisasi HCC</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navInformation" role="button" data-bs-toggle="dropdown">
-                        Information
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navInformation">
-                        <li><a class="dropdown-item" href="https://drive.google.com/file/d/1ZDWmrUFUD_oJIDiWDlt3xwHEHnqQvMfQ/view?usp=sharing"><i class="fa-solid fa-mobile-screen me-2 opacity-40"></i>Program Hris APk</a></li>
-                        <li><a class="dropdown-item" href="kpi.html"><i class="fa-solid fa-chart-bar me-2 opacity-40"></i>Pengisian KPI</a></li>
-                        <li><a class="dropdown-item" href="suratsp.html"><i class="fa-solid fa-file-alt me-2 opacity-40"></i>Surat SP Pegawai</a></li>
-                        <li><a class="dropdown-item" href="info/pajak.html"><i class="fa-solid fa-receipt me-2 opacity-40"></i>Info Pajak</a></li>
-                        <li><a class="dropdown-item" href="lomba/index.html"><i class="fa-solid fa-star me-2 opacity-40"></i>Lomba Ramadhan 1477-H</a></li>
-                        <li><a class="dropdown-item" href="npp/index.html"><i class="fa-solid fa-star me-2 opacity-40"></i>NPP Generator </a></li>
-                        <li><a class="dropdown-item" href="movie.html"><i class="fa-solid fa-star me-2 opacity-40"></i>Movie HCC </a>
-                        <li><a class="dropdown-item" href="game/quiz.html"><i class="fa-solid fa-star me-2 opacity-40"></i>quiz Movie </a></li> 
-                        <li><a class="dropdown-item" href="game/index.html"><i class="fa-solid fa-star me-2 opacity-40"></i>Game HCC </a></li>
-        
-                    </ul>
-                </li>
-            </ul>
-        </div>
+<div class="wrap">
+<nav class="navbar navbar-expand-lg fixed-top" id="nav">
+  <div class="container">
+    <a class="navbar-brand" href="#"><img src="logo.png" width="42" height="32" alt="Logo">HUMAN CAPITAL &amp; COMPLIANCE</a>
+    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Toggle navigation"><i class="fa-solid fa-bars" style="color:var(--tx2)"></i></button>
+    <div class="collapse navbar-collapse justify-content-end" id="menu">
+      <ul class="navbar-nav align-items-center gap-1">
+        <li class="nav-item"><a class="nav-link" href="#program">Digitalisasi HCC</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Information</a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="https://drive.google.com/file/d/1ZDWmrUFUD_oJIDiWDlt3xwHEHnqQvMfQ/view?usp=sharing"><i class="fa-solid fa-mobile-screen me-2 opacity-50"></i>Program Hris APk</a></li>
+            <li><a class="dropdown-item" href="kpi.html"><i class="fa-solid fa-chart-bar me-2 opacity-50"></i>Pengisian KPI</a></li>
+            <li><a class="dropdown-item" href="suratsp.html"><i class="fa-solid fa-file-alt me-2 opacity-50"></i>Surat SP Pegawai</a></li>
+            <li><a class="dropdown-item" href="info/pajak.html"><i class="fa-solid fa-receipt me-2 opacity-50"></i>Info Pajak</a></li>
+            <li><a class="dropdown-item" href="lomba/index.html"><i class="fa-solid fa-star me-2 opacity-50"></i>Lomba Ramadhan 1477-H</a></li>
+            <li><a class="dropdown-item" href="npp/index.html"><i class="fa-solid fa-star me-2 opacity-50"></i>NPP Generator</a></li>
+            <li><a class="dropdown-item" href="movie.html"><i class="fa-solid fa-star me-2 opacity-50"></i>Movie HCC</a></li>
+            <li><a class="dropdown-item" href="game/quiz.html"><i class="fa-solid fa-star me-2 opacity-50"></i>Quiz Movie</a></li>
+            <li><a class="dropdown-item" href="game/index.html"><i class="fa-solid fa-star me-2 opacity-50"></i>Game HCC</a></li>
+          </ul>
+        </li>
+      </ul>
     </div>
+  </div>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-    <div class="blob blob-3"></div>
-
-    <div class="container">
-        <div class="row align-items-center g-5">
-
-            <div class="col-lg-6" data-aos="fade-right" data-aos-duration="900">
-                <div class="hero-eyebrow">
-                    <span class="eyebrow-pill">NEW 2025</span>
-                    HCC Digital Platform
-                </div>
-                <h1>
-                    Membangun<br>
-                    <span class="highlight">Talenta Unggul</span><br>
-                    Masa Depan
-                </h1>
-                <p>
-                    Human Capital Center berfokus pada pengembangan SDM profesional,
-                    adaptif, dan berintegritas tinggi — didukung ekosistem digital terpadu.
-                </p>
-
-                <div class="d-flex flex-wrap gap-3 mt-4">
-                    <a href="#program" class="btn-primary-hcc">
-                        <i class="fa-solid fa-rocket fa-sm"></i>
-                        Jelajahi Platform
-                    </a>
-                   
-                </div>
-
-                <div class="hero-stats mt-4">
-                    <div class="stat-item">
-                        <div class="stat-number"><span class="count-up" data-target="26">0</span>+</div>
-                        <div class="stat-label">Platform</div>
-                    </div>
-                    
-                </div>
-            </div>
-
-            <div class="col-lg-6" data-aos="fade-left" data-aos-duration="900">
-                <div class="hero-visual">
-                    <div class="deco-ring ring-1"></div>
-                    <div class="deco-ring ring-2"></div>
-
-                    <!-- Floating Badge 1 -->
-                    <div class="hero-badge hero-badge-1">
-                        <div class="badge-icon" style="background:var(--primary-pale)">
-                            <i class="fa-solid fa-fire" style="color:red;font-size:14px;"></i>
-                        </div>
-                        <div>
-                            <div style="font-size:0.72rem;color:darkblue;font-weight:500;">Anda tidak harus hebat untuk memulai<br>tetapi Anda harus memulai untuk menjadi hebat. </div>
-                            
-                        </div>
-                    </div>
-
-                    <div class="hero-img-card">
-                        <img src="imageku.png" alt="HCC Platform" style="max-height:380px;width:100%;object-fit:cover;">
-                    </div>
-
-                    <!-- Floating Badge 2 -->
-                    <div class="hero-badge hero-badge-2">
-                        <div class="badge-icon" style="background:#f0fdf4">
-                            <i class="fa-solid fa-rocket" style="color:darkblue;font-size:14px;"></i>
-                        </div>
-                        <div>
-                            <div style="font-size:0.72rem;color:darkred;font-weight:500;">Setiap hari adalah kesempatan baru <br> untuk menjadi versi yang lebih baik dari dirimu sendiri</div>
-                            
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+  <div class="orb o1"></div><div class="orb o2"></div>
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <div class="tag mono"><b>NEW 2025</b><span class="dot"></span>HCC Digital Platform</div>
+        <h1>Membangun <span class="grad">Talenta Unggul</span> Masa Depan<span class="cursor"></span></h1>
+        <p class="lead">Human Capital Center berfokus pada pengembangan SDM profesional, adaptif, dan berintegritas tinggi — didukung ekosistem digital terpadu.</p>
+        <div class="mt-4"><a href="#program" class="btn-main"><i class="fa-solid fa-rocket"></i>Jelajahi Platform</a></div>
+        <div class="stat"><div class="n grad"><span id="cnt" data-target="26">0</span>+</div><div class="l mono">PLATFORM<br>AKTIF</div></div>
+      </div>
+      <div class="col-lg-6">
+        <div class="vis">
+          <div class="float f1"><i class="fa-solid fa-fire me-1" style="color:#fb923c"></i> Anda tidak harus hebat untuk memulai, tetapi Anda harus memulai untuk menjadi hebat.</div>
+          <div class="frame"><div class="in"><div class="bar"><i></i><i></i><i></i></div><img src="imageku.png" alt="HCC Platform"></div></div>
+          <div class="float f2"><i class="fa-solid fa-rocket me-1" style="color:var(--cy)"></i> Setiap hari adalah kesempatan baru untuk menjadi versi yang lebih baik dari dirimu sendiri.</div>
         </div>
+      </div>
     </div>
+  </div>
 </section>
 
-<!-- PROGRAM -->
 <section id="program" class="section">
-    <div class="container">
-        
-        <div class="text-center mb-5" data-aos="fade-up">
-            <div class="section-label mx-auto" style="display:inline-flex;">Ekosistem Digital</div>
-            <h2 class="section-title mt-2">Platform Digital <span class="accent-text">Inovatif HCC</span></h2>
-            <p class="section-desc mx-auto mt-3">Deretan platform cerdas yang mendukung seluruh siklus Human Capital — dari rekrutmen hingga evaluasi kinerja.</p>
-        </div>
-
-        <!-- ROW 1 -->
-        <div class="row g-4 mb-4 row-block">
-            <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="0">
-                <div class="hcc-card text-center">
-                    <div class="card-chip"><i class="fa-solid fa-circle-dot fa-xs"></i> Learning</div>
-                    <div class="card-icon-wrap"><i class="fa-solid fa-graduation-cap card-i"></i></div>
-                    <h5>Portal Training</h5>
-                    <p>Menyediakan tempat terpusat untuk belajar, mengakses materi pelatihan, memantau perkembangan, dan meningkatkan keterampilan secara terstruktur dan efisien.</p>
-                    <a href="https://portal-training.vercel.app/portal.html" class="btn-card">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="80">
-                <div class="hcc-card text-center">
-                    <div class="card-chip"><i class="fa-solid fa-circle-dot fa-xs"></i> Recruitment</div>
-                    <div class="card-icon-wrap"><i class="fa-solid fa-user-plus card-i"></i></div>
-                    <h5>Portal Recruitment</h5>
-                    <p>Platform terpusat untuk proses perekrutan, mulai dari publikasi lowongan, penerimaan lamaran, seleksi kandidat, hingga pemantauan status rekrutmen.</p>
-                    <a href="https://portal-rekrutmen.vercel.app/" class="btn-card">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="160">
-                <div class="hcc-card text-center">
-                    <div class="card-chip"><i class="fa-solid fa-circle-dot fa-xs"></i> Performance</div>
-                    <div class="card-icon-wrap"><i class="fa-solid fa-clipboard-list card-i"></i></div>
-                    <h5>KPI Key Performance Indicator</h5>
-                    <p>Pengukuran kinerja berbasis indikator utama yang terukur dan transparan untuk semua level organisasi.</p>
-                    <a href="https://kpi-pegawai.vercel.app/" class="btn-card">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-
-        <!-- ROW 2 -->
-        <div class="row g-4 mb-4 row-block">
-            <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="0">
-                <div class="hcc-card text-center">
-                    <div class="card-chip"><i class="fa-solid fa-circle-dot fa-xs"></i> Productivity</div>
-                    <div class="card-icon-wrap"><i class="fa-solid fa-stopwatch card-i"></i></div>
-                    <h5>WOLA</h5>
-                    <p>WorkLoad Analysis/Timecard untuk mengukur produktifitas pegawai di Head Quarter secara real-time dan akurat.</p>
-                    <a href="https://timecard-ssi.vercel.app/" class="btn-card">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="80">
-                <div class="hcc-card text-center">
-                    <div class="card-chip"><i class="fa-solid fa-circle-dot fa-xs"></i> Appreciation</div>
-                    <div class="card-icon-wrap"><i class="fa-solid fa-trophy card-i"></i></div>
-                    <h5>Survey Best Employee</h5>
-                    <p>Mengidentifikasi dan memilih karyawan terbaik berdasarkan kinerja, sikap kerja, kontribusi, serta penilaian dari atasan maupun rekan kerja.</p>
-                    <a href="https://best-employee.vercel.app/" class="btn-card">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="160">
-                <div class="hcc-card text-center">
-                    <div class="card-chip"><i class="fa-solid fa-circle-dot fa-xs"></i> Welfare</div>
-                    <div class="card-icon-wrap"><i class="fa-solid fa-mosque card-i"></i></div>
-                    <h5>Pajero</h5>
-                    <p>Bentuk apresiasi kepada karyawan berprestasi sekaligus memberikan kesempatan beribadah dan mempererat hubungan perusahaan.</p>
-                    <a href="https://pajero-ssi.vercel.app/" class="btn-card">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-
-        <!-- ROW 3 -->
-        <div class="row g-4 mb-4 row-block">
-            <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="0">
-                <div class="hcc-card text-center">
-                    <div class="card-chip"><i class="fa-solid fa-circle-dot fa-xs"></i> Feedback</div>
-                    <div class="card-icon-wrap"><i class="fa-solid fa-microphone card-i"></i></div>
-                    <h5>Open Channel</h5>
-                    <p>Ruang terbuka untuk menyampaikan ide, saran, dan kritik membangun dari seluruh elemen organisasi.</p>
-                    <a href="https://openchannel-ssi.vercel.app/" class="btn-card">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="80">
-                <div class="hcc-card text-center">
-                    <div class="card-chip"><i class="fa-solid fa-circle-dot fa-xs"></i> Attendance</div>
-                    <div class="card-icon-wrap"><i class="fa-solid fa-user-clock card-i"></i></div>
-                    <h5>Absensi Keterlambatan HQ</h5>
-                    <p>Pemantauan kehadiran dan ketepatan waktu secara akurat dan real-time untuk pegawai Headquarters.</p>
-                    <a href="https://absensi-telat.vercel.app/" class="btn-card">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="160">
-                <div class="hcc-card text-center">
-                    <div class="card-chip"><i class="fa-solid fa-circle-dot fa-xs"></i> Evaluation</div>
-                    <div class="card-icon-wrap"><i class="fa-solid fa-arrows-spin card-i"></i></div>
-                    <h5>Evaluasi 360 Degree</h5>
-                    <p>Sistem penilaian menyeluruh dari atasan, rekan kerja, dan diri sendiri untuk gambaran kinerja yang komprehensif.</p>
-                    <a href="https://ssi360.vercel.app/" class="btn-card">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-
-        <!-- ROW 4 -->
-        <div class="row g-4 mb-4 row-block">
-            <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="0">
-                <div class="hcc-card text-center">
-                    <div class="card-chip"><i class="fa-solid fa-circle-dot fa-xs"></i> Library SSI </div>
-                    <div class="card-icon-wrap"><i class="fa-solid fa-book-open card-i"></i></div>
-                    <h5>Kamus SSI</h5>
-                    <p>Referensi istilah dan terminologi di lingkungan SSI yang disusun secara sistematis dan mudah diakses.</p>
-                    <a href="https://kamus-ssi.vercel.app/" class="btn-card">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="80">
-                <div class="hcc-card text-center">
-                    <div class="card-chip"><i class="fa-solid fa-circle-dot fa-xs"></i> Compliance</div>
-                    <div class="card-icon-wrap"><i class="fa-solid fa-magnifying-glass-chart card-i"></i></div>
-                    <h5>Checker</h5>
-                    <p>Memudahkan pencarian dan pemantauan status pegawai bermasalah maupun yang telah resign secara terstruktur.</p>
-                    <a href="https://checker-hcc.vercel.app/" class="btn-card">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="160">
-                <div class="hcc-card text-center">
-                    <div class="card-chip"><i class="fa-solid fa-circle-dot fa-xs"></i> Archive</div>
-                    <div class="card-icon-wrap"><i class="fa-solid fa-folder-open card-i"></i></div>
-                    <h5>Arsip Surat SP Pegawai</h5>
-                    <p>Memastikan setiap surat SP tersimpan, terlacak, dan dapat digunakan kembali sesuai kebutuhan kapan saja.</p>
-                    <a href="suratsp.html" class="btn-card">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-
-        <!-- ROW 5 -->
-        <div class="row g-4 mb-4 row-block">
-            <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="0">
-                <div class="hcc-card text-center">
-                    <div class="card-chip"><i class="fa-solid fa-circle-dot fa-xs"></i> Training</div>
-                    <div class="card-icon-wrap"><i class="fa-solid fa-calendar-check card-i"></i></div>
-                    <h5>ATP 2026</h5>
-                    <p>Annual Training Program HCC 2026 — perencanaan pelatihan tahunan yang terstruktur dan komprehensif.</p>
-                    <a href="https://portal-training.vercel.app/atp.html" class="btn-card">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="80">
-                <div class="hcc-card text-center">
-                    <div class="card-chip"><i class="fa-solid fa-circle-dot fa-xs"></i> Documentation</div>
-                    <div class="card-icon-wrap"><i class="fa-solid fa-file-lines card-i"></i></div>
-                    <h5>Meet Docs</h5>
-                    <p>Dokumentasi Meeting SSI yang tersimpan rapi, mudah diakses, dan dapat digunakan sebagai referensi keputusan.</p>
-                    <a href="meetdocs.html" class="btn-card">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="160">
-                <div class="hcc-card text-center">
-                    <div class="card-chip"><i class="fa-solid fa-circle-dot fa-xs"></i> Assessment</div>
-                    <div class="card-icon-wrap"><i class="fa-solid fa-clipboard-check card-i"></i></div>
-                    <h5>ACI / Assessment Center SSI</h5>
-                    <p>Proses penilaian terstruktur untuk mengetahui kinerja, kompetensi, dan potensi karyawan dalam perusahaan.</p>
-                    <a href="https://assessmentssi.softr.app/" class="btn-card">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-
-        <!-- ROW 6 -->
-        <div class="row g-4 mb-4 row-block">
-            <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="0">
-                <div class="hcc-card text-center">
-                    <div class="card-chip"><i class="fa-solid fa-circle-dot fa-xs"></i> Meeting</div>
-                    <div class="card-icon-wrap"><i class="fa-solid fa-users card-i"></i></div>
-                    <h5>Meeting RAOPS</h5>
-                    <p>Rapat Presentasi Divisi HCC yang terdokumentasi dengan baik untuk transparansi dan akuntabilitas.</p>
-                    <a href="https://rapat.vercel.app" class="btn-card">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="80">
-                <div class="hcc-card text-center">
-                    <div class="card-chip"><i class="fa-solid fa-circle-dot fa-xs"></i> Registration</div>
-                    <div class="card-icon-wrap"><i class="fa-solid fa-address-card card-i"></i></div>
-                    <h5>Registrasi Tamu Online</h5>
-                    <p>Pencatatan digital untuk tamu yang masuk — cepat, akurat, dan terintegrasi dengan sistem keamanan.</p>
-                    <a href="https://daftartamu-ssi.vercel.app/" class="btn-card">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="160">
-                <div class="hcc-card text-center">
-                    <div class="card-chip"><i class="fa-solid fa-circle-dot fa-xs"></i>Template Form Event</div>
-                    <div class="card-icon-wrap"><i class="fa-solid fa-flag card-i"></i></div>
-                    <h5>Evidence Upacara Online</h5>
-                    <p>Pencatatan online peserta upacara untuk memastikan kehadiran tercatat dengan tertib dan akurat.</p>
-                    <a href="https://form-upacara.vercel.app/" class="btn-card">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-
-        <!-- ROW 7 -->
-        <div class="row g-4 row-block">
-            <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="0">
-                <div class="hcc-card text-center">
-                    <div class="card-chip"><i class="fa-solid fa-circle-dot fa-xs"></i> Conseling</div>
-                    <div class="card-icon-wrap"><i class="fa-solid fa-user-doctor card-i"></i></div>
-                    <h5>Konseling HCC</h5>
-                    <p>Pencatatan data konseling digital untuk mendukung kesejahteraan mental dan profesional karyawan secara berkelanjutan.</p>
-                    <a href="https://konseling-hcc.vercel.app" class="btn-card">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="0">
-                <div class="hcc-card text-center">
-                    <div class="card-chip"><i class="fa-solid fa-circle-dot fa-xs"></i> Ultah Pegawai by Email </div>
-                    <div class="card-icon-wrap"><i class="fa-solid fa-cake-candles card-i"></i></div>
-                    <h5>Dashboar ultah pegawai by email </h5>
-                    <p>Memberikan ucapan Ulang tahun kepada pegawai lewat email </p>
-                    <a href="https://ultah-pegawai.vercel.app" class="btn-card">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="0">
-                <div class="hcc-card text-center">
-                    <div class="card-chip"><i class="fa-solid fa-circle-dot fa-xs"></i>Request Room Meeting </div>
-                    <div class="card-icon-wrap"><i class="fa-solid fa-building card-i"></i></div>
-                    <h5>Pemesanan Ruang meeting </h5>
-                    <p>Karena Ruang meeting yang terbatas , aplikasi ini dibuat untuk mengakomodir hal tersebut </p>
-                    <a href="https://order-room.vercel.app" class="btn-card">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-        
-         <!-- ROW 8 -->
-         <div class="row g-4 row-block">
-            <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="0">
-                <div class="hcc-card text-center">
-                    <div class="card-chip"><i class="fa-solid fa-circle-dot fa-xs"></i>Absensi Internal HCC </div>
-                    <div class="card-icon-wrap"><i class="fa-solid fa-user-check card-i"></i></div>
-                    <h5>Pencatatan Absensi internal </h5>
-                    <p>Database & Grafik kedisiplinan pegawai HCC</p>
-                    <a href="https://hcc-absen.vercel.app" class="btn-card">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="0">
-                <div class="hcc-card text-center">
-                    <div class="card-chip"><i class="fa-solid fa-circle-dot fa-xs"></i>Form Lowongan kerja </div>
-                    <div class="card-icon-wrap"><i class="fa-solid fa-briefcase card-i"></i></div>
-                    <h5>Template lowongan kerja SSI</h5>
-                    <p>Form template unutk Lowongan PT SSI </p>
-                    <a href="https://lamaran-ssi.vercel.app" class="btn-card">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-             <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="0">
-                <div class="hcc-card text-center">
-                    <div class="card-chip"><i class="fa-solid fa-circle-dot fa-xs"></i>Talent Pool pegawai</div>
-                    <div class="card-icon-wrap"><i class="fa-solid fa-users card-i"></i></div>
-                    <h5>Porto Folio pegawai PT SSI</h5>
-                    <p>Database porto folio pegawai untuk kebutuhan talent pool </p>
-                    <a href="https://portofolio-ssi.vercel.app/" class="btn-card">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-
-        <!-- ROW 9 -->
-         <div class="row g-4 row-block">    
-            <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="0">
-                <div class="hcc-card text-center">
-                    <div class="card-chip"><i class="fa-solid fa-circle-dot fa-xs"></i>Disciplinary Committee</div>
-                    <div class="card-icon-wrap"><i class="fa-solid fa-scale-balanced card-i"></i></div>
-                    <h5>Team Hukumaan Jabatan untuk pegawai PT SSI</h5>
-                    <p>Hukuman pegawai secara Adil lewat Musyawarah/Voting </p>
-                    <a href="https://hukumanjabatan.vercel.app/" class="btn-card">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="0">
-                <div class="hcc-card text-center">
-                    <div class="card-chip"><i class="fa-solid fa-circle-dot fa-xs"></i>Fraud Vulnerability Index </div>
-                    <div class="card-icon-wrap"><i class="fa-solid fa-shield-halved card-i"></i></div>
-                    <h5>Fraud Vulnerability Index / FVI</h5>
-                    <p>indeks untuk mengukur tingkat kerentanan seseorang terhadap risiko fraud  </p>
-                    <a href="https://fraudindex.vercel.app/" class="btn-card">Lihat Detail <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-
+  <div class="container">
+    <div class="text-center rv">
+      <span class="eyebrow mono">&lt;ekosistem_digital /&gt;</span>
+      <h2 class="title">Platform Digital <span class="grad">Inovatif HCC</span></h2>
+      <p class="sub">Deretan platform cerdas yang mendukung seluruh siklus Human Capital — dari rekrutmen hingga evaluasi kinerja.</p>
     </div>
+    <div class="search rv"><i class="fa-solid fa-magnifying-glass"></i><input id="q" type="search" placeholder="Cari platform, mis. KPI, absensi, training…" aria-label="Cari platform"></div>
+    <div class="row g-4" id="grid"></div>
+    <div class="empty" id="empty"><i class="fa-regular fa-face-frown fa-2x mb-3"></i><div>Tidak ada platform yang cocok. Coba kata kunci lain.</div></div>
+  </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
-    <div class="d-flex align-items-center justify-content-center gap-2 mb-1">
-        <div class="brand-icon" style="width:28px;height:28px;border-radius:8px;font-size:12px;">
-            <i class="fa-solid fa-people-group"></i>
-        </div>
-        <span class="brand-text">Human Capital Center</span>
-    </div>
-    <p>© 2025 HCC Digital · Powered by <span class="brand-text">HCC Digital</span></p>
+  <div class="mb-1"><i class="fa-solid fa-people-group me-2" style="color:var(--cy)"></i><span class="grad fw-bold">Human Capital Center</span></div>
+  <div>© 2025 HCC Digital · Powered by HCC Digital</div>
 </footer>
+</div>
 
-</div><!-- /page-wrapper -->
-
-<!-- FAB -->
-<button class="fab-top" id="fabTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll to top">
-    <i class="fa-solid fa-chevron-up"></i>
-</button>
+<button class="fab" id="fab" aria-label="Kembali ke atas" onclick="scrollTo({top:0,behavior:'smooth'})"><i class="fa-solid fa-chevron-up"></i></button>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 <script>
-/* AOS */
-AOS.init({ duration: 850, once: true, easing: 'ease-out-cubic' });
+/* ── DATA KARTU ── [chip, icon, judul, deskripsi, url] */
+const D=[
+["Learning","graduation-cap","Portal Training","Tempat terpusat untuk belajar, mengakses materi pelatihan, memantau perkembangan, dan meningkatkan keterampilan secara terstruktur.","https://portal-training.vercel.app/portal.html"],
+["Recruitment","user-plus","Portal Recruitment","Platform perekrutan: publikasi lowongan, penerimaan lamaran, seleksi kandidat, hingga pemantauan status rekrutmen.","https://portal-rekrutmen.vercel.app/"],
+["Performance","clipboard-list","KPI Key Performance Indicator","Pengukuran kinerja berbasis indikator utama yang terukur dan transparan untuk semua level organisasi.","https://kpi-pegawai.vercel.app/"],
+["Productivity","stopwatch","WOLA","WorkLoad Analysis/Timecard untuk mengukur produktifitas pegawai di Head Quarter secara real-time dan akurat.","https://timecard-ssi.vercel.app/"],
+["Appreciation","trophy","Survey Best Employee","Memilih karyawan terbaik berdasarkan kinerja, sikap kerja, kontribusi, serta penilaian atasan dan rekan kerja.","https://best-employee.vercel.app/"],
+["Welfare","mosque","Pajero","Apresiasi kepada karyawan berprestasi sekaligus kesempatan beribadah dan mempererat hubungan perusahaan.","https://pajero-ssi.vercel.app/"],
+["Feedback","microphone","Open Channel","Ruang terbuka untuk menyampaikan ide, saran, dan kritik membangun dari seluruh elemen organisasi.","https://openchannel-ssi.vercel.app/"],
+["Attendance","user-clock","Absensi Keterlambatan HQ","Pemantauan kehadiran dan ketepatan waktu secara akurat dan real-time untuk pegawai Headquarters.","https://absensi-telat.vercel.app/"],
+["Evaluation","arrows-spin","Evaluasi 360 Degree","Penilaian menyeluruh dari atasan, rekan kerja, dan diri sendiri untuk gambaran kinerja yang komprehensif.","https://ssi360.vercel.app/"],
+["Library SSI","book-open","Kamus SSI","Referensi istilah dan terminologi di lingkungan SSI yang disusun sistematis dan mudah diakses.","https://kamus-ssi.vercel.app/"],
+["Compliance","magnifying-glass-chart","Checker","Memudahkan pencarian dan pemantauan status pegawai bermasalah maupun yang telah resign.","https://checker-hcc.vercel.app/"],
+["Archive","folder-open","Arsip Surat SP Pegawai","Memastikan setiap surat SP tersimpan, terlacak, dan dapat digunakan kembali kapan saja.","suratsp.html"],
+["Training","calendar-check","ATP 2026","Annual Training Program HCC 2026 — perencanaan pelatihan tahunan yang terstruktur dan komprehensif.","https://portal-training.vercel.app/atp.html"],
+["Documentation","file-lines","Meet Docs","Dokumentasi Meeting SSI yang tersimpan rapi, mudah diakses, dan jadi referensi keputusan.","meetdocs.html"],
+["Assessment","clipboard-check","ACI / Assessment Center SSI","Penilaian terstruktur untuk mengetahui kinerja, kompetensi, dan potensi karyawan.","https://assessmentssi.softr.app/"],
+["Meeting","users","Meeting RAOPS","Rapat Presentasi Divisi HCC yang terdokumentasi baik untuk transparansi dan akuntabilitas.","https://rapat.vercel.app"],
+["Registration","address-card","Registrasi Tamu Online","Pencatatan digital tamu yang masuk — cepat, akurat, dan terintegrasi dengan sistem keamanan.","https://daftartamu-ssi.vercel.app/"],
+["Template Form Event","flag","Evidence Upacara Online","Pencatatan online peserta upacara agar kehadiran tercatat tertib dan akurat.","https://form-upacara.vercel.app/"],
+["Counseling","user-doctor","Konseling HCC","Pencatatan data konseling digital untuk mendukung kesejahteraan mental dan profesional karyawan.","https://konseling-hcc.vercel.app"],
+["Ultah Pegawai by Email","cake-candles","Dashboard Ultah Pegawai by Email","Mengirim ucapan ulang tahun kepada pegawai lewat email.","https://ultah-pegawai.vercel.app"],
+["Request Room Meeting","building","Pemesanan Ruang Meeting","Karena ruang meeting terbatas, aplikasi ini dibuat untuk mengakomodir pemesanan ruangan.","https://order-room.vercel.app"],
+["Absensi Internal HCC","user-check","Pencatatan Absensi Internal","Database &amp; grafik kedisiplinan pegawai HCC.","https://hcc-absen.vercel.app"],
+["Form Lowongan Kerja","briefcase","Template Lowongan Kerja SSI","Form template untuk lowongan PT SSI.","https://lamaran-ssi.vercel.app"],
+["Talent Pool Pegawai","users","Portofolio Pegawai PT SSI","Database portofolio pegawai untuk kebutuhan talent pool.","https://portofolio-ssi.vercel.app/"],
+["Disciplinary Committee","scale-balanced","Tim Hukuman Jabatan PT SSI","Hukuman pegawai secara adil lewat musyawarah/voting.","https://hukumanjabatan.vercel.app/"],
+["Fraud Vulnerability Index","shield-halved","Fraud Vulnerability Index / FVI","Indeks untuk mengukur tingkat kerentanan seseorang terhadap risiko fraud.","https://fraudindex.vercel.app/"]
+];
+const grid=document.getElementById('grid');
+grid.innerHTML=D.map(([c,i,t,d,u])=>`<div class="col-lg-4 col-sm-6 col-x rv" data-s="${(c+' '+t+' '+d).toLowerCase()}"><div class="card-h"><span class="chip">${c}</span><div class="ic"><i class="fa-solid fa-${i}"></i></div><h5>${t}</h5><p>${d}</p><a href="${u}" class="go">Lihat Detail <i class="fa-solid fa-arrow-right fa-xs"></i></a></div></div>`).join('');
 
-/* Navbar scroll */
-const nav = document.getElementById('mainNav');
-window.addEventListener('scroll', () => {
-    nav.classList.toggle('scrolled', window.scrollY > 50);
-});
+/* spotlight hover */
+grid.addEventListener('pointermove',e=>{const c=e.target.closest('.card-h');if(!c)return;const r=c.getBoundingClientRect();c.style.setProperty('--mx',(e.clientX-r.left)+'px');c.style.setProperty('--my',(e.clientY-r.top)+'px')});
 
-/* Scroll progress */
-const progressBar = document.getElementById('scroll-progress');
-window.addEventListener('scroll', () => {
-    const total = document.body.scrollHeight - window.innerHeight;
-    progressBar.style.width = ((window.scrollY / total) * 100) + '%';
-});
+/* search */
+const q=document.getElementById('q'),empty=document.getElementById('empty');
+q.addEventListener('input',()=>{const v=q.value.trim().toLowerCase();let n=0;
+document.querySelectorAll('.col-x').forEach(el=>{const ok=el.dataset.s.includes(v);el.style.display=ok?'':'none';if(ok)n++});
+empty.style.display=n?'none':'block'});
 
-/* FAB */
-const fab = document.getElementById('fabTop');
-window.addEventListener('scroll', () => {
-    fab.classList.toggle('visible', window.scrollY > 400);
-});
+/* reveal */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.1});
+document.querySelectorAll('.rv').forEach((el,i)=>{el.style.transitionDelay=(i%3)*70+'ms';io.observe(el)});
 
-/* Count up */
-function animateCount(el) {
-    const target = +el.getAttribute('data-target');
-    const dur = 2000;
-    const step = target / (dur / 16);
-    let cur = 0;
-    const timer = setInterval(() => {
-        cur += step;
-        if (cur >= target) { cur = target; clearInterval(timer); }
-        el.textContent = Math.floor(cur);
-    }, 16);
-}
-const countObserver = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-        if (e.isIntersecting) { animateCount(e.target); countObserver.unobserve(e.target); }
-    });
-}, { threshold: 0.6 });
-document.querySelectorAll('.count-up').forEach(el => countObserver.observe(el));
+/* nav, progress, fab */
+const nav=document.getElementById('nav'),pg=document.getElementById('prog'),fab=document.getElementById('fab');
+addEventListener('scroll',()=>{nav.classList.toggle('scrolled',scrollY>50);
+pg.style.width=(scrollY/(document.body.scrollHeight-innerHeight)*100)+'%';fab.classList.toggle('v',scrollY>400)});
 
-/* Particle canvas — light theme */
-(function() {
-    const canvas = document.getElementById('particle-canvas');
-    const ctx = canvas.getContext('2d');
-    let W, H, particles = [], mouse = { x: null, y: null };
+/* count up */
+(function(){const el=document.getElementById('cnt'),t=+el.dataset.target;let c=0;
+const tm=setInterval(()=>{c+=t/90;if(c>=t){c=t;clearInterval(tm)}el.textContent=Math.floor(c)},16)})();
 
-    function resize() {
-        W = canvas.width  = window.innerWidth;
-        H = canvas.height = window.innerHeight;
-    }
-    resize();
-    window.addEventListener('resize', resize);
-
-    document.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
-    document.addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
-
-    const isMobile = () => window.innerWidth < 768;
-
-    class Particle {
-        constructor() { this.reset(); }
-        reset() {
-            this.x = Math.random() * W;
-            this.y = Math.random() * H;
-            this.size = Math.random() * 2.8 + 0.5;
-            const speed = 0.12 + Math.random() * 0.2;
-            const angle = Math.random() * Math.PI * 2;
-            this.vx = Math.cos(angle) * speed;
-            this.vy = Math.sin(angle) * speed;
-            this.alpha = 0.1 + Math.random() * 0.4;
-            this.life = 0;
-            this.maxLife = 500 + Math.random() * 700;
-            const colors = ['26,79,219', '8,145,178', '249,115,22', '99,102,241'];
-            this.color = colors[Math.floor(Math.random() * colors.length)];
-        }
-        update() {
-            this.life++;
-            if (this.life > this.maxLife) { this.reset(); return; }
-            this.x += this.vx;
-            this.y += this.vy;
-            if (mouse.x !== null && !isMobile()) {
-                const dx = this.x - mouse.x, dy = this.y - mouse.y;
-                const dist = Math.sqrt(dx*dx + dy*dy);
-                if (dist < 120) {
-                    const force = (120 - dist) / 120;
-                    this.x += dx / dist * force * 2.5;
-                    this.y += dy / dist * force * 2.5;
-                }
-            }
-            if (this.x < -5) this.x = W+5;
-            if (this.x > W+5) this.x = -5;
-            if (this.y < -5) this.y = H+5;
-            if (this.y > H+5) this.y = -5;
-        }
-        draw() {
-            const progress = this.life / this.maxLife;
-            const a = this.alpha * Math.min(progress*10,1) * (1-Math.max((progress-0.7)/0.3,0));
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
-            ctx.fillStyle = `rgba(${this.color},${a})`;
-            ctx.fill();
-        }
-    }
-
-    function init() {
-        particles = Array.from({length: isMobile() ? 50 : 100}, () => new Particle());
-    }
-    init();
-    window.addEventListener('resize', init);
-
-    function drawLines() {
-        const maxD = isMobile() ? 80 : 110;
-        for (let i = 0; i < particles.length; i++) {ss
-            for (let j = i+1; j < particles.length; j++) {
-                const dx = particles[i].x - particles[j].x;
-                const dy = particles[i].y - particles[j].y;
-                const d = Math.sqrt(dx*dx + dy*dy);
-                if (d < maxD) {
-                    ctx.beginPath();
-                    ctx.moveTo(particles[i].x, particles[i].y);
-                    ctx.lineTo(particles[j].x, particles[j].y);
-                    ctx.strokeStyle = `rgba(26,79,219,${(1-d/maxD)*0.07})`;
-                    ctx.lineWidth = 0.6;
-                    ctx.stroke();
-                }
-            }
-        }
-    }
-
-    function loop() {
-        ctx.clearRect(0, 0, W, H);
-        drawLines();
-        particles.forEach(p => { p.update(); p.draw(); });
-        requestAnimationFrame(loop);
-    }
-    loop();
+/* ── DIGITAL PARTICLE FX: network + binary rain + mouse repel ── */
+(function(){
+const cv=document.getElementById('fx'),x=cv.getContext('2d');
+let W,H,P=[],R=[],m={x:null,y:null};
+const mob=()=>innerWidth<768, cols=['34,211,238','139,92,246','244,114,182'];
+function size(){W=cv.width=innerWidth;H=cv.height=innerHeight;
+ P=Array.from({length:mob()?55:120},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2+.6,
+  vx:(Math.random()-.5)*.5,vy:(Math.random()-.5)*.5,c:cols[Math.random()*3|0],a:.3+Math.random()*.6}));
+ R=Array.from({length:Math.floor(W/(mob()?46:34))},(_,i)=>({x:i*(mob()?46:34)+8,y:Math.random()*-H,s:.6+Math.random()*1.4,l:6+Math.random()*10|0,t:''}));}
+size();addEventListener('resize',size);
+addEventListener('pointermove',e=>{m.x=e.clientX;m.y=e.clientY});
+addEventListener('pointerleave',()=>{m.x=m.y=null});
+if(matchMedia('(prefers-reduced-motion: reduce)').matches){x.fillStyle='rgba(34,211,238,.4)';P.forEach(p=>x.fillRect(p.x,p.y,2,2));return}
+function loop(){
+ x.clearRect(0,0,W,H);
+ /* binary rain */
+ x.font='13px JetBrains Mono, monospace';
+ R.forEach(d=>{d.y+=d.s;
+  for(let k=0;k<d.l;k++){const yy=d.y-k*16;if(yy<-16||yy>H+16)continue;
+   x.fillStyle=`rgba(34,211,238,${(1-k/d.l)*.16})`;x.fillText((Math.random()>.5?'1':'0'),d.x,yy)}
+  if(d.y-d.l*16>H){d.y=Math.random()*-200;d.s=.6+Math.random()*1.4}});
+ /* particles */
+ P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;
+  if(m.x!==null&&!mob()){const dx=p.x-m.x,dy=p.y-m.y,d=Math.hypot(dx,dy);if(d<130&&d>0){const f=(130-d)/130;p.x+=dx/d*f*3;p.y+=dy/d*f*3}}
+  if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+  x.beginPath();x.arc(p.x,p.y,p.r,0,6.283);x.fillStyle=`rgba(${p.c},${p.a})`;x.shadowBlur=8;x.shadowColor=`rgb(${p.c})`;x.fill();x.shadowBlur=0});
+ /* lines */
+ const md=mob()?85:130;
+ for(let i=0;i<P.length;i++){for(let j=i+1;j<P.length;j++){
+  const dx=P[i].x-P[j].x,dy=P[i].y-P[j].y,d=Math.hypot(dx,dy);
+  if(d<md){x.strokeStyle=`rgba(${P[i].c},${(1-d/md)*.22})`;x.lineWidth=.7;x.beginPath();x.moveTo(P[i].x,P[i].y);x.lineTo(P[j].x,P[j].y);x.stroke()}}
+  if(m.x!==null&&!mob()){const dx=P[i].x-m.x,dy=P[i].y-m.y,d=Math.hypot(dx,dy);
+   if(d<170){x.strokeStyle=`rgba(244,114,182,${(1-d/170)*.5})`;x.beginPath();x.moveTo(P[i].x,P[i].y);x.lineTo(m.x,m.y);x.stroke()}}}
+ requestAnimationFrame(loop)}
+loop();
 })();
 </script>
 </body>
