@@ -212,7 +212,8 @@ const D=[
 ["Form Lowongan Kerja","briefcase","Template Lowongan Kerja SSI","Form template untuk lowongan PT SSI.","https://lamaran-ssi.vercel.app"],
 ["Talent Pool Pegawai","users","Portofolio Pegawai PT SSI","Database portofolio pegawai untuk kebutuhan talent pool.","https://portofolio-ssi.vercel.app/"],
 ["Disciplinary Committee","scale-balanced","Tim Hukuman Jabatan PT SSI","Hukuman pegawai secara adil lewat musyawarah/voting.","https://hukumanjabatan.vercel.app/"],
-["Fraud Vulnerability Index","shield-halved","Fraud Vulnerability Index / FVI","Indeks untuk mengukur tingkat kerentanan seseorang terhadap risiko fraud.","https://fraudindex.vercel.app/"]
+["Fraud Vulnerability Index","shield-halved","Fraud Vulnerability Index / FVI","Indeks untuk mengukur tingkat kerentanan seseorang terhadap risiko fraud.","https://fraudindex.vercel.app/"],
+["Comment Center","headset","SSI Respon Center ","dashboard  untuk mengukur tingkat SLA masing masing divisi dalam merespon keluhan pegawai.","https://ssi-respon.vercel.app/"]  
 ];
 const grid=document.getElementById('grid');
 grid.innerHTML=D.map(([c,i,t,d,u])=>`<div class="col-lg-4 col-sm-6 col-x rv" data-s="${(c+' '+t+' '+d).toLowerCase()}"><div class="card-h"><span class="chip">${c}</span><div class="ic"><i class="fa-solid fa-${i}"></i></div><h5>${t}</h5><p>${d}</p><a href="${u}" class="go">Lihat Detail <i class="fa-solid fa-arrow-right fa-xs"></i></a></div></div>`).join('');
